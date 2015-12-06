@@ -53,7 +53,9 @@ public final class NitfConstants {
     static final String GENERIC_READ_ERROR_MESSAGE = "Error reading from NITF file: ";
     static final String FILE_NOT_FOUND_EXCEPTION_MESSAGE = "File Not Found Exception opening file:";
     static final String NOT_FOUND_MESSAGE_JOINER = " not found: ";
+
     static final String READ_MODE = "r";
+    static final String WRITE_MODE = "rw";
 
     // Coordinate
     /**

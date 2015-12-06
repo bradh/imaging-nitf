@@ -442,5 +442,4 @@ public class Nitf extends AbstractNitfSegment {
     public final int getExtendedHeaderDataOverflow() {
         return nitfExtendedHeaderDataOverflow;
     }
-
 }
