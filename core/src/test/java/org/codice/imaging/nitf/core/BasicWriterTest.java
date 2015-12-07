@@ -15,8 +15,13 @@
 package org.codice.imaging.nitf.core;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.text.ParseException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,17 +54,35 @@ public class BasicWriterTest {
     }
 
     @Test
-    public void writeSimpleHeader() throws ParseException {
-        NitfReader reader = new NitfInputStreamReader(new BufferedInputStream(getInputStream("/WithBE.ntf")));
+    public void roundTripSimpleFile() throws ParseException, URISyntaxException, IOException {
+        roundTripFile("/WithBE.ntf");
+    }
+
+    @Test
+    public void roundTripTextFile() throws ParseException, URISyntaxException, IOException {
+        roundTripFile("/JitcNitf21Samples/ns3201a.nsf");
+    }
+
+    @Test
+    public void roundTripHeaderFile() throws ParseException, URISyntaxException, IOException {
+        roundTripFile("/JitcNitf21Samples/i_3034c.ntf");
+    }
+
+    @Test
+    public void roundTripGeoFile() throws ParseException, URISyntaxException, IOException {
+        roundTripFile("/JitcNitf21Samples/i_3001a.ntf");
+    }
+
+    private void roundTripFile(String sourceFileName) throws URISyntaxException, ParseException, IOException {
+        String outputFile = FilenameUtils.getName(sourceFileName);
+
+        NitfReader reader = new NitfInputStreamReader(new BufferedInputStream(getInputStream(sourceFileName)));
         SlottedNitfParseStrategy parseStrategy = new AllDataExtractionParseStrategy();
         NitfFileParser.parse(reader, parseStrategy);
-        NitfWriter writer = new NitfFileWriter(parseStrategy, "testFile.ntf");
+        NitfWriter writer = new NitfFileWriter(parseStrategy, outputFile);
         writer.write();
-        NitfReader testReader = new FileReader("testFile.ntf");
-        SlottedNitfParseStrategy testParser = new AllDataExtractionParseStrategy();
-        NitfFileParser.parse(testReader, testParser);
-        assertEquals(parseStrategy.nitfFileLevelHeader.getFileType(), testParser.nitfFileLevelHeader.getFileType());
-        // TODO: check all contents are the same.
+        assertTrue(FileUtils.contentEquals(new File(getClass().getResource(sourceFileName).toURI()), new File(outputFile)));
+        assertTrue(new File(outputFile).delete());
     }
 
     private InputStream getInputStream(String testfile) {

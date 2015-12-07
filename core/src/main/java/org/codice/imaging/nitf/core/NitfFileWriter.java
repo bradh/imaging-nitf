@@ -31,6 +31,7 @@ public class NitfFileWriter implements NitfWriter {
     private RandomAccessFile mOutputFile = null;
 
     private static final int BASIC_HEADER_LENGTH = 388;
+    private static final int NUM_PARTS_IN_IGEOLO = 4;
 
     /**
      * Construct a file-based NITF writer.
@@ -171,15 +172,25 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthNumber(header.getActualBitsPerPixelPerBand(), NitfConstants.ABPP_LENGTH);
         writeFixedLengthString(header.getPixelJustification().getTextEquivalent(), NitfConstants.PJUST_LENGTH);
         writeFixedLengthString(header.getImageCoordinatesRepresentation().getTextEquivalent(fileType), NitfConstants.ICORDS_LENGTH);
-        // if (header.getImageCoordinatesRepresentation() != ImageCoordinatesRepresentation.NONE) {
-            // TODO: output IGEOLO
-        // }
+        if (header.getImageCoordinatesRepresentation() != ImageCoordinatesRepresentation.NONE) {
+            writeFixedLengthString(header.getImageCoordinates().getCoordinate00().getSourceFormat(),
+                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+            writeFixedLengthString(header.getImageCoordinates().getCoordinate0MaxCol().getSourceFormat(),
+                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+            writeFixedLengthString(header.getImageCoordinates().getCoordinateMaxRowMaxCol().getSourceFormat(),
+                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+            writeFixedLengthString(header.getImageCoordinates().getCoordinateMaxRow0().getSourceFormat(),
+                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+        }
         writeFixedLengthNumber(header.getImageComments().size(), NitfConstants.NICOM_LENGTH);
         for (String comment : header.getImageComments()) {
             writeFixedLengthString(comment, NitfConstants.ICOM_LENGTH);
         }
         writeFixedLengthString(header.getImageCompression().getTextEquivalent(), NitfConstants.IC_LENGTH);
-        writeFixedLengthString(header.getCompressionRate(), NitfConstants.COMRAT_LENGTH);
+        if ((header.getImageCompression() != ImageCompression.NOTCOMPRESSED)
+                && (header.getImageCompression() != ImageCompression.NOTCOMPRESSEDMASK)) {
+            writeFixedLengthString(header.getCompressionRate(), NitfConstants.COMRAT_LENGTH);
+        }
         writeFixedLengthNumber(header.getNumBands(), NitfConstants.NBANDS_LENGTH);
         for (int i = 0; i < header.getNumBands(); ++i) {
             NitfImageBand band = header.getImageBandZeroBase(i);
@@ -191,7 +202,7 @@ public class NitfFileWriter implements NitfWriter {
             if (band.getNumLUTs() != 0) {
                 writeFixedLengthNumber(band.getNumLUTEntries(), NitfConstants.NELUT_LENGTH);
                 for (int j = 0; j < band.getNumLUTs(); ++j) {
-                    NitfImageBandLUT lut = band.getLUT(j);
+                    NitfImageBandLUT lut = band.getLUTZeroBase(j);
                     mOutputFile.write(lut.getEntries());
                 }
             }
