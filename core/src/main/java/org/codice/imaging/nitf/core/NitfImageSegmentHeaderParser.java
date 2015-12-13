@@ -285,7 +285,9 @@ class NitfImageSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readUDID() throws ParseException {
-        TreCollection userDefinedSubheaderTres = parsingStrategy.parseTREs(reader, userDefinedImageDataLength - NitfConstants.UDOFL_LENGTH);
+        TreCollection userDefinedSubheaderTres = parsingStrategy.parseTREs(reader,
+                userDefinedImageDataLength - NitfConstants.UDOFL_LENGTH,
+                TreSource.UserDefinedImageData);
         segment.mergeTREs(userDefinedSubheaderTres);
     }
 
@@ -298,7 +300,9 @@ class NitfImageSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readIXSHD() throws ParseException {
-        TreCollection extendedSubheaderTres = parsingStrategy.parseTREs(reader, imageExtendedSubheaderDataLength - NitfConstants.IXSOFL_LENGTH);
+        TreCollection extendedSubheaderTres = parsingStrategy.parseTREs(reader,
+                imageExtendedSubheaderDataLength - NitfConstants.IXSOFL_LENGTH,
+                TreSource.ImageExtendedSubheaderData);
         segment.mergeTREs(extendedSubheaderTres);
     }
 

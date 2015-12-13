@@ -99,4 +99,23 @@ public class TreCollection {
     public final String toString() {
         return "TRE Collection";
     }
+
+    /**
+     * Get the TREs that came from a specific source.
+     *
+     * In this context, the source is the part of the header / subheader that
+     * the TRE was read from (or where it should be put on write).
+     *
+     * @param source the source to select for.
+     * @return List of TREs that match the source.
+     */
+    public final List<Tre> getTREsForSource(final TreSource source) {
+        List<Tre> tres = new ArrayList<Tre>();
+        for (Tre tre : treCollectionEntries) {
+            if (tre.getSource() == source) {
+                tres.add(tre);
+            }
+        }
+        return tres;
+    }
 }

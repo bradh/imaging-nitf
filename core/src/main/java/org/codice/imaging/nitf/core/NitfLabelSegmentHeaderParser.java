@@ -104,7 +104,9 @@ class NitfLabelSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readLXSHD() throws ParseException {
-        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader, labelExtendedSubheaderLength - NitfConstants.LXSOFL_LENGTH);
+        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader,
+                labelExtendedSubheaderLength - NitfConstants.LXSOFL_LENGTH,
+                TreSource.LabelExtendedSubheaderData);
         segment.mergeTREs(extendedSubheaderTREs);
     }
 }

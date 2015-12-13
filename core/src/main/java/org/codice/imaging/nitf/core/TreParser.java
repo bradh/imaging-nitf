@@ -14,9 +14,11 @@
  **/
 package org.codice.imaging.nitf.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
@@ -81,8 +83,8 @@ class TreParser {
         }
     }
 
-    Tre parseOneTre(final NitfReader reader, final String tag, final int fieldLength) throws ParseException {
-        Tre tre = new Tre(tag);
+    Tre parseOneTre(final NitfReader reader, final String tag, final int fieldLength, final TreSource source) throws ParseException {
+        Tre tre = new Tre(tag, source);
         TreType treType = getTreTypeForTag(tag);
         if (treType == null) {
             tre.setRawData(reader.readBytesRaw(fieldLength));
@@ -279,4 +281,40 @@ class TreParser {
         return conditionParts[1].equals(actualValue);
     }
 
+    public byte[] serializeTRE(final Tre tre) throws ParseException {
+        TreType treType = getTreTypeForTag(tre.getName());
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        serializeFieldOrLoopOrIf(treType.getFieldOrLoopOrIf(), tre, output);
+        return output.toByteArray();
+    }
+
+    private void serializeFieldOrLoopOrIf(final List<Object> fieldOrLoopOrIf,
+            final TreGroup treGroup,
+            final ByteArrayOutputStream baos) throws ParseException {
+        try {
+            for (Object fieldLoopIf : fieldOrLoopOrIf) {
+                if (fieldLoopIf instanceof FieldType) {
+                    byte[] field = getFieldValue((FieldType) fieldLoopIf, treGroup);
+                    baos.write(field);
+                } else if (fieldLoopIf instanceof LoopType) {
+                    LoopType loopType = (LoopType) fieldLoopIf;
+                    TreEntry loopDataEntry = treGroup.getEntry(loopType.getName());
+                    for (TreGroup subGroup : loopDataEntry.getGroups()) {
+                        serializeFieldOrLoopOrIf(loopType.getFieldOrLoopOrIf(), subGroup, baos);
+                    }
+                } else {
+                    throw new ParseException("Need to implement IfType handling", 0);
+                }
+            }
+        } catch (IOException ex) {
+            throw new ParseException("Failed to write TRE:" + ex.getMessage(), 0);
+        }
+    }
+
+    private byte[] getFieldValue(final FieldType fieldType, final TreGroup treGroup) throws ParseException {
+        String fieldTypeName = fieldType.getName();
+        TreEntry entry = treGroup.getEntry(fieldTypeName);
+        String value = entry.getFieldValue();
+        return value.getBytes(StandardCharsets.UTF_8);
+    }
 }

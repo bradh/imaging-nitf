@@ -26,14 +26,16 @@ class TreCollectionParser {
     }
 
     /**
-        Parse the TREs from the current reader.
-
-        @param reader the reader to use.
-        @param treLength the length of the TRE.
-        @return TRE collection.
-        @throws ParseException if the TRE parsing fails (e.g. end of file or TRE that is clearly incorrect).
-    */
-    public final TreCollection parse(final NitfReader reader, final int treLength) throws ParseException {
+     * Parse the TREs from the current reader.
+     *
+     * @param reader the reader to use.
+     * @param treLength the length of the TRE.
+     * @param source the source (segment header / subheader) that the TRE is being parsed from.
+     *
+     * @return TRE collection.
+     * @throws ParseException if the TRE parsing fails (e.g. end of file or TRE that is clearly incorrect).
+     */
+    public final TreCollection parse(final NitfReader reader, final int treLength, final TreSource source) throws ParseException {
         TreCollection treCollection = new TreCollection();
         int bytesRead = 0;
         while (bytesRead < treLength) {
@@ -41,7 +43,7 @@ class TreCollectionParser {
             bytesRead += NitfConstants.TAG_LENGTH;
             int fieldLength = reader.readBytesAsInteger(NitfConstants.TAGLEN_LENGTH);
             bytesRead += NitfConstants.TAGLEN_LENGTH;
-            treCollection.add(treParser.parseOneTre(reader, tag, fieldLength));
+            treCollection.add(treParser.parseOneTre(reader, tag, fieldLength, source));
             bytesRead += fieldLength;
         }
         return treCollection;

@@ -83,6 +83,21 @@ public class BasicWriterTest {
         roundTripFile("/JitcNitf21Samples/ns3361c.nsf");
     }
 
+    @Test
+    public void roundTripGraphicFile() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf21Samples/i_3051e.ntf");
+    }
+
+    @Test
+    public void roundTripGraphic2File() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf21Samples/ns3051v.nsf");
+    }
+
+    @Test
+    public void roundTripDESFile() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/autzen-utm10.ntf");
+    }
+
     private void roundTripFile(String sourceFileName) throws URISyntaxException, ParseException, IOException {
         String outputFile = FilenameUtils.getName(sourceFileName);
 

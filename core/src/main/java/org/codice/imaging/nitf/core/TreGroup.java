@@ -133,4 +133,24 @@ public class TreGroup {
         return "(Group)";
     }
     // CSON: DesignForExtension
+
+    /**
+     * Get the length of this TreGroup.
+     *
+     * @return the length in bytes.
+     */
+    // TODO: this implementation is bogus, because we are missing any reserved fields
+    public final int getDataLength() {
+        int length = 0;
+        for (TreEntry entry : getEntries()) {
+            if (entry.getFieldValue() != null) {
+                length += entry.getFieldValue().length();
+            } else if (entry.getGroups() != null) {
+                for (TreGroup subgroup : entry.getGroups()) {
+                    length += subgroup.getDataLength();
+                }
+            }
+        }
+        return length;
+    }
 }
