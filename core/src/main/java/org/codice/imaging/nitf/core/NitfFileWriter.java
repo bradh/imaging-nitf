@@ -14,9 +14,11 @@
  */
 package org.codice.imaging.nitf.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,8 +104,16 @@ public class NitfFileWriter implements NitfWriter {
         int numberOfTextSegments = header.getTextSegmentDataLengths().size();
         int numberOfDataExtensionSegments = header.getDataExtensionSegmentDataLengths().size();
 
-        int userDefinedHeaderDataLength = getUserDefinedHeaderDataLength(header);
-        int extendedHeaderDataLength = getExtendedHeaderDataLength(header);
+        byte[] userDefinedHeaderData = getTREs(header, TreSource.UserDefinedHeaderData);
+        int userDefinedHeaderDataLength = userDefinedHeaderData.length;
+        if (userDefinedHeaderDataLength > 0) {
+            userDefinedHeaderDataLength += NitfConstants.UDHOFL_LENGTH;
+        }
+        byte[] extendedHeaderData = getTREs(header, TreSource.ExtendedHeaderData);
+        int extendedHeaderDataLength = extendedHeaderData.length;
+        if (extendedHeaderDataLength > 0) {
+            extendedHeaderDataLength += NitfConstants.XHDLOFL_LENGTH;
+        }
 
         int headerLength = BASIC_HEADER_LENGTH
                 + numberOfImageSegments * (NitfConstants.LISH_LENGTH + NitfConstants.LI_LENGTH)
@@ -163,44 +173,32 @@ public class NitfFileWriter implements NitfWriter {
 
         writeFixedLengthNumber(0, NitfConstants.NUMRES_LENGTH);
 
-        writeFixedLengthNumber(userDefinedHeaderDataLength, NitfConstants.UDHDL_LENGTH);
+        writeFixedLengthNumber(userDefinedHeaderData.length, NitfConstants.UDHDL_LENGTH);
         if (userDefinedHeaderDataLength > 0) {
             writeFixedLengthNumber(header.getUserDefinedHeaderOverflow(), NitfConstants.UDHOFL_LENGTH);
-            writeTREs(header, TreSource.UserDefinedHeaderData);
+            mOutputFile.write(userDefinedHeaderData);
         }
         writeFixedLengthNumber(extendedHeaderDataLength, NitfConstants.XHDL_LENGTH);
         if (extendedHeaderDataLength > 0) {
             writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.XHDLOFL_LENGTH);
-            writeTREs(header, TreSource.ExtendedHeaderData);
-        }
-    }
-
-    private int getUserDefinedHeaderDataLength(final Nitf header) {
-        int treLength = getLengthOfTresForSource(header, TreSource.UserDefinedHeaderData);
-        if (treLength == 0) {
-            return 0;
-        } else {
-            return (treLength + NitfConstants.UDHOFL_LENGTH);
-        }
-    }
-
-    private int getExtendedHeaderDataLength(final Nitf header) {
-        int treLength = getLengthOfTresForSource(header, TreSource.ExtendedHeaderData);
-        if (treLength == 0) {
-            return 0;
-        } else {
-            return (treLength + NitfConstants.XHDLOFL_LENGTH);
+            mOutputFile.write(extendedHeaderData);
         }
     }
 
     private void writeFixedLengthString(final String s, final int length) throws IOException {
-        String paddedString = String.format("%1$-" + length + "s", s);
-        mOutputFile.writeBytes(paddedString);
+        mOutputFile.writeBytes(padStringToLength(s, length));
+    }
+
+    private String padStringToLength(final String s, final int length) {
+        return String.format("%1$-" + length + "s", s);
     }
 
     private void writeFixedLengthNumber(final long number, final int length) throws IOException {
-        String paddedString = String.format("%0" + length + "d", number);
-        mOutputFile.writeBytes(paddedString);
+        mOutputFile.writeBytes(padNumberToLength(number, length));
+    }
+
+    private String padNumberToLength(final long number, final int length) {
+        return String.format("%0" + length + "d", number);
     }
 
     private void writeImageHeader(final NitfImageSegmentHeader header, final FileType fileType) throws IOException, ParseException {
@@ -268,53 +266,45 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthNumber(header.getImageLocationColumn(), NitfConstants.ILOC_HALF_LENGTH);
         writeFixedLengthString(header.getImageMagnification(), NitfConstants.IMAG_LENGTH);
 
-        int userDefinedImageDataLength = getUserDefinedImageDataLength(header);
+        byte[] userDefinedImageData = getTREs(header, TreSource.UserDefinedImageData);
+        int userDefinedImageDataLength = userDefinedImageData.length;
+        if (userDefinedImageDataLength > 0) {
+            userDefinedImageDataLength += NitfConstants.UDIDL_LENGTH;
+        }
         writeFixedLengthNumber(userDefinedImageDataLength, NitfConstants.UDIDL_LENGTH);
         if (userDefinedImageDataLength > 0) {
             writeFixedLengthNumber(header.getUserDefinedHeaderOverflow(), NitfConstants.UDOFL_LENGTH);
-            writeTREs(header, TreSource.UserDefinedImageData);
+            mOutputFile.write(userDefinedImageData);
         }
-        int imageExtendedSubheaderDataLength = getImageExtendedSubheaderLength(header);
+
+        byte[] imageExtendedSubheaderData = getTREs(header, TreSource.ImageExtendedSubheaderData);
+        int imageExtendedSubheaderDataLength = imageExtendedSubheaderData.length;
+        if (imageExtendedSubheaderDataLength > 0) {
+            imageExtendedSubheaderDataLength += NitfConstants.IXSOFL_LENGTH;
+        }
         writeFixedLengthNumber(imageExtendedSubheaderDataLength, NitfConstants.IXSHDL_LENGTH);
         if (imageExtendedSubheaderDataLength > 0) {
             writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.IXSOFL_LENGTH);
-            writeTREs(header, TreSource.ImageExtendedSubheaderData);
+            mOutputFile.write(imageExtendedSubheaderData);
         }
     }
 
-    private void writeTREs(final AbstractNitfSegment header, final TreSource source) throws IOException, ParseException {
+    private byte[] getTREs(final AbstractNitfSegment header, final TreSource source) throws ParseException, IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (Tre tre : header.getTREsRawStructure().getTREsForSource(source)) {
-            writeFixedLengthString(tre.getName(), NitfConstants.TAG_LENGTH);
+            String name = padStringToLength(tre.getName(), NitfConstants.TAG_LENGTH);
+            baos.write(name.getBytes(StandardCharsets.UTF_8));
             if (tre.getRawData() != null) {
-                writeFixedLengthNumber(tre.getRawData().length, NitfConstants.TAGLEN_LENGTH);
-                mOutputFile.write(tre.getRawData());
+                String tagLen = padNumberToLength(tre.getRawData().length, NitfConstants.TAGLEN_LENGTH);
+                baos.write(tagLen.getBytes(StandardCharsets.UTF_8));
+                baos.write(tre.getRawData());
             } else {
-                writeFixedLengthNumber(tre.getDataLength(), NitfConstants.TAGLEN_LENGTH);
-                writeOneTRE(tre);
+                byte[] treData = mTreParser.serializeTRE(tre);
+                baos.write(padNumberToLength(treData.length, NitfConstants.TAGLEN_LENGTH).getBytes(StandardCharsets.UTF_8));
+                baos.write(treData);
             }
         }
-    }
-
-    private void writeOneTRE(final Tre tre) throws IOException, ParseException {
-        mOutputFile.write(mTreParser.serializeTRE(tre));
-    }
-
-    private int getUserDefinedImageDataLength(final NitfImageSegmentHeader header) {
-        int treLength = getLengthOfTresForSource(header, TreSource.UserDefinedImageData);
-        if (treLength == 0) {
-            return 0;
-        } else {
-            return (treLength + NitfConstants.UDOFL_LENGTH);
-        }
-    }
-
-    private int getImageExtendedSubheaderLength(final NitfImageSegmentHeader header) {
-        int treLength = getLengthOfTresForSource(header, TreSource.ImageExtendedSubheaderData);
-        if (treLength == 0) {
-            return 0;
-        } else {
-            return (treLength + NitfConstants.IXSOFL_LENGTH);
-        }
+        return baos.toByteArray();
     }
 
     private void writeImageData(final byte[] imageData) throws IOException {
@@ -381,20 +371,6 @@ public class NitfFileWriter implements NitfWriter {
 
     private void writeDESData(final byte[] desData) throws IOException {
         mOutputFile.write(desData);
-    }
-
-    private int getLengthOfTresForSource(final AbstractNitfSegment header, final TreSource source) {
-        int totalTreLength = 0;
-        for (Tre tre : header.getTREsRawStructure().getTREsForSource(source)) {
-            totalTreLength += NitfConstants.TAG_LENGTH;
-            totalTreLength += NitfConstants.TAGLEN_LENGTH;
-            if (tre.getRawData() != null) {
-                totalTreLength += tre.getRawData().length;
-            } else {
-                totalTreLength += tre.getDataLength();
-            }
-        }
-        return totalTreLength;
     }
 
     private void writeFileSecurityMetadata(final NitfFileSecurityMetadata fsmeta) throws IOException {
