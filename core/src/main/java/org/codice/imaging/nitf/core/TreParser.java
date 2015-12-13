@@ -283,27 +283,34 @@ class TreParser {
 
     public byte[] serializeTRE(final Tre tre) throws ParseException {
         TreType treType = getTreTypeForTag(tre.getName());
+        TreParams parameters = new TreParams();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        serializeFieldOrLoopOrIf(treType.getFieldOrLoopOrIf(), tre, output);
+        serializeFieldOrLoopOrIf(treType.getFieldOrLoopOrIf(), tre, output, parameters);
         return output.toByteArray();
     }
 
     private void serializeFieldOrLoopOrIf(final List<Object> fieldOrLoopOrIf,
             final TreGroup treGroup,
-            final ByteArrayOutputStream baos) throws ParseException {
+            final ByteArrayOutputStream baos,
+            final TreParams params) throws ParseException {
         try {
             for (Object fieldLoopIf : fieldOrLoopOrIf) {
                 if (fieldLoopIf instanceof FieldType) {
-                    byte[] field = getFieldValue((FieldType) fieldLoopIf, treGroup);
+                    byte[] field = getFieldValue((FieldType) fieldLoopIf, treGroup, params);
                     baos.write(field);
                 } else if (fieldLoopIf instanceof LoopType) {
                     LoopType loopType = (LoopType) fieldLoopIf;
                     TreEntry loopDataEntry = treGroup.getEntry(loopType.getName());
                     for (TreGroup subGroup : loopDataEntry.getGroups()) {
-                        serializeFieldOrLoopOrIf(loopType.getFieldOrLoopOrIf(), subGroup, baos);
+                        serializeFieldOrLoopOrIf(loopType.getFieldOrLoopOrIf(), subGroup, baos, params);
+                    }
+                } else if (fieldLoopIf instanceof IfType) {
+                    IfType ifType = (IfType) fieldLoopIf;
+                    if (evaluateCondition(ifType.getCond(), params)) {
+                        serializeFieldOrLoopOrIf(ifType.getFieldOrLoopOrIf(), treGroup, baos, params);
                     }
                 } else {
-                    throw new ParseException("Need to implement IfType handling", 0);
+                    throw new ParseException("Unexpected TRE structure type", 0);
                 }
             }
         } catch (IOException ex) {
@@ -311,10 +318,14 @@ class TreParser {
         }
     }
 
-    private byte[] getFieldValue(final FieldType fieldType, final TreGroup treGroup) throws ParseException {
+    private byte[] getFieldValue(final FieldType fieldType, final TreGroup treGroup, final TreParams params) throws ParseException {
         String fieldTypeName = fieldType.getName();
+        if ("".equals(fieldTypeName)) {
+            fieldTypeName = fieldType.getLongname();
+        }
         TreEntry entry = treGroup.getEntry(fieldTypeName);
         String value = entry.getFieldValue();
+        params.addParameter(fieldTypeName, value);
         return value.getBytes(StandardCharsets.UTF_8);
     }
 }

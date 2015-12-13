@@ -98,6 +98,11 @@ public class BasicWriterTest {
         roundTripFile("/autzen-utm10.ntf");
     }
 
+    @Test
+    public void roundTripTREs() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf21Samples/i_3128b.ntf");
+    }
+
     private void roundTripFile(String sourceFileName) throws URISyntaxException, ParseException, IOException {
         String outputFile = FilenameUtils.getName(sourceFileName);
 
