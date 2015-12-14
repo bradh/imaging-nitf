@@ -119,12 +119,12 @@
         <field name="L_LINES" length="5" type="integer" minval="1" maxval="99999"/>
         <field name="LAYOVER_ANGLE" length="3" type="integer" minval="0" maxval="359" unit="degrees"/>
         <field name="SHADOW_ANGLE" length="3" type="integer" minval="0" maxval="359" unit="degrees"/>
-        <field length="16"/>
+        <field length="16" fixed_value="                "/>
         <field name="FRLC_LOC" length="21"/>
         <field name="LRLC_LOC" length="21"/>
         <field name="LRFC_LOC" length="21"/>
         <field name="FRFC_LOC" length="21"/>
-        <field length="5"/>
+        <field length="5" fixed_value="010.0"/>
     </tre>
 
     <tre name="BNDPLB" minlength="124" maxlength="99964" location="image">

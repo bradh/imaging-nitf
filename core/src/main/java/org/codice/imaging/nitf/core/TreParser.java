@@ -323,9 +323,15 @@ class TreParser {
         if ("".equals(fieldTypeName)) {
             fieldTypeName = fieldType.getLongname();
         }
-        TreEntry entry = treGroup.getEntry(fieldTypeName);
-        String value = entry.getFieldValue();
-        params.addParameter(fieldTypeName, value);
-        return value.getBytes(StandardCharsets.UTF_8);
+        if (fieldTypeName != null) {
+            TreEntry entry = treGroup.getEntry(fieldTypeName);
+            String value = entry.getFieldValue();
+            params.addParameter(fieldTypeName, value);
+            return value.getBytes(StandardCharsets.UTF_8);
+        } else {
+            // This is a pad field
+            String value = fieldType.getFixedValue();
+            return value.getBytes(StandardCharsets.UTF_8);
+        }
     }
 }

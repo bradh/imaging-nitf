@@ -173,7 +173,7 @@ public class NitfFileWriter implements NitfWriter {
 
         writeFixedLengthNumber(0, NitfConstants.NUMRES_LENGTH);
 
-        writeFixedLengthNumber(userDefinedHeaderData.length, NitfConstants.UDHDL_LENGTH);
+        writeFixedLengthNumber(userDefinedHeaderDataLength, NitfConstants.UDHDL_LENGTH);
         if (userDefinedHeaderDataLength > 0) {
             writeFixedLengthNumber(header.getUserDefinedHeaderOverflow(), NitfConstants.UDHOFL_LENGTH);
             mOutputFile.write(userDefinedHeaderData);
@@ -269,7 +269,7 @@ public class NitfFileWriter implements NitfWriter {
         byte[] userDefinedImageData = getTREs(header, TreSource.UserDefinedImageData);
         int userDefinedImageDataLength = userDefinedImageData.length;
         if (userDefinedImageDataLength > 0) {
-            userDefinedImageDataLength += NitfConstants.UDIDL_LENGTH;
+            userDefinedImageDataLength += NitfConstants.UDOFL_LENGTH;
         }
         writeFixedLengthNumber(userDefinedImageDataLength, NitfConstants.UDIDL_LENGTH);
         if (userDefinedImageDataLength > 0) {
@@ -311,7 +311,7 @@ public class NitfFileWriter implements NitfWriter {
         mOutputFile.write(imageData);
     }
 
-    private void writeGraphicHeader(final NitfGraphicSegmentHeader header) throws IOException {
+    private void writeGraphicHeader(final NitfGraphicSegmentHeader header) throws IOException, ParseException {
         writeFixedLengthString(NitfConstants.SY, NitfConstants.SY.length());
         writeFixedLengthString(header.getIdentifier(), NitfConstants.SID_LENGTH);
         writeFixedLengthString(header.getGraphicName(), NitfConstants.SNAME_LENGTH);
@@ -329,8 +329,17 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthNumber(header.getBoundingBox2Row(), NitfConstants.SBND2_HALF_LENGTH);
         writeFixedLengthNumber(header.getBoundingBox2Column(), NitfConstants.SBND2_HALF_LENGTH);
         writeFixedLengthString(NitfConstants.SRES, NitfConstants.SRES.length()); // SRES2
-        // TODO: Handle TREs properly
-        writeFixedLengthNumber(0, NitfConstants.SXSHDL_LENGTH);
+
+        byte[] graphicExtendedSubheaderData = getTREs(header, TreSource.GraphicExtendedSubheaderData);
+        int graphicExtendedSubheaderDataLength = graphicExtendedSubheaderData.length;
+        if (graphicExtendedSubheaderDataLength > 0) {
+            graphicExtendedSubheaderDataLength += NitfConstants.SXSOFL_LENGTH;
+        }
+        writeFixedLengthNumber(graphicExtendedSubheaderDataLength, NitfConstants.SXSHDL_LENGTH);
+        if (graphicExtendedSubheaderDataLength > 0) {
+            writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.SXSOFL_LENGTH);
+            mOutputFile.write(graphicExtendedSubheaderData);
+        }
     }
 
     private void writeGraphicData(final byte[] graphicData) throws IOException {
