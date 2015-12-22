@@ -36,6 +36,7 @@ public class NitfFileWriter implements NitfWriter {
 
     private static final int BASIC_HEADER_LENGTH = 388;
     private static final int NUM_PARTS_IN_IGEOLO = 4;
+    private static final String DOWNGRADE_EVENT_MAGIC = "999998";
 
     /**
      * Construct a file-based NITF writer.
@@ -64,12 +65,22 @@ public class NitfFileWriter implements NitfWriter {
                 writeGraphicHeader(mDataSource.graphicSegmentHeaders.get(i));
                 writeGraphicData(mDataSource.graphicSegmentData.get(i));
             }
+            int numberOfSymbolSegments = mDataSource.symbolSegmentHeaders.size();
+            for (int i = 0; i < numberOfSymbolSegments; ++i) {
+                writeSymbolHeader(mDataSource.symbolSegmentHeaders.get(i));
+                writeSymbolData(mDataSource.symbolSegmentData.get(i));
+            }
+            int numberOfLabelSegments = mDataSource.labelSegmentHeaders.size();
+            for (int i = 0; i < numberOfLabelSegments; ++i) {
+                writeLabelHeader(mDataSource.getLabelSegmentHeaders().get(i));
+                writeLabelData(mDataSource.getLabelSegmentData().get(i));
+            }
             int numberOfTextSegments = mDataSource.textSegmentHeaders.size();
             for (int i = 0; i < numberOfTextSegments; ++i) {
-                writeTextHeader(mDataSource.textSegmentHeaders.get(i));
+                writeTextHeader(mDataSource.textSegmentHeaders.get(i), mDataSource.nitfFileLevelHeader.getFileType());
                 writeTextData(mDataSource.textSegmentData.get(i));
             }
-            int numberOfDataExtensionSegments = mDataSource.dataExtensionSegmentData.size();
+            int numberOfDataExtensionSegments = mDataSource.dataExtensionSegmentHeaders.size();
             for (int i = 0; i < numberOfDataExtensionSegments; ++i) {
                 writeDESHeader(mDataSource.dataExtensionSegmentHeaders.get(i), mDataSource.nitfFileLevelHeader.getFileType());
                 writeDESData(mDataSource.dataExtensionSegmentData.get(i));
@@ -91,16 +102,21 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthString(header.getOriginatingStationId(), NitfConstants.OSTAID_LENGTH);
         mOutputFile.writeBytes(header.getFileDateTime().getSourceString());
         writeFixedLengthString(header.getFileTitle(), NitfConstants.FTITLE_LENGTH);
-        writeFileSecurityMetadata(header.getFileSecurityMetadata());
+        writeFileSecurityMetadata(header.getFileSecurityMetadata(), header.getFileType());
         writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
-        mOutputFile.writeByte(header.getFileBackgroundColour().getRed());
-        mOutputFile.writeByte(header.getFileBackgroundColour().getGreen());
-        mOutputFile.writeByte(header.getFileBackgroundColour().getBlue());
-        writeFixedLengthString(header.getOriginatorsName(), NitfConstants.ONAME_LENGTH);
+        if ((header.getFileType() == FileType.NITF_TWO_ONE) || (header.getFileType() == FileType.NSIF_ONE_ZERO)) {
+            mOutputFile.writeByte(header.getFileBackgroundColour().getRed());
+            mOutputFile.writeByte(header.getFileBackgroundColour().getGreen());
+            mOutputFile.writeByte(header.getFileBackgroundColour().getBlue());
+            writeFixedLengthString(header.getOriginatorsName(), NitfConstants.ONAME_LENGTH);
+        } else {
+            writeFixedLengthString(header.getOriginatorsName(), NitfConstants.ONAME20_LENGTH);
+        }
         writeFixedLengthString(header.getOriginatorsPhoneNumber(), NitfConstants.OPHONE_LENGTH);
 
         int numberOfImageSegments = header.getImageSegmentDataLengths().size();
         int numberOfGraphicSegments = header.getGraphicSegmentDataLengths().size();
+        int numberOfLabelSegments = header.getLabelSegmentDataLengths().size();
         int numberOfTextSegments = header.getTextSegmentDataLengths().size();
         int numberOfDataExtensionSegments = header.getDataExtensionSegmentDataLengths().size();
 
@@ -119,20 +135,31 @@ public class NitfFileWriter implements NitfWriter {
                 + numberOfImageSegments * (NitfConstants.LISH_LENGTH + NitfConstants.LI_LENGTH)
                 + numberOfGraphicSegments * (NitfConstants.LSSH_LENGTH + NitfConstants.LS_LENGTH)
                 + numberOfTextSegments * (NitfConstants.LTSH_LENGTH + NitfConstants.LT_LENGTH)
+                + numberOfLabelSegments * (NitfConstants.LLSH_LENGTH + NitfConstants.LL_LENGTH)
                 + numberOfDataExtensionSegments * (NitfConstants.LDSH_LENGTH + NitfConstants.LD_LENGTH)
                 + userDefinedHeaderDataLength
                 + extendedHeaderDataLength;
+
+        if (header.getFileType() == FileType.NITF_TWO_ZERO) {
+            if (DOWNGRADE_EVENT_MAGIC.equals(header.getFileSecurityMetadata().getDowngradeDateOrSpecialCase())) {
+                headerLength += NitfConstants.XSDEVT20_LENGTH;
+            }
+        }
 
         int fileLength = headerLength;
         for (int i = 0; i < numberOfImageSegments; ++i) {
             fileLength += header.getImageSegmentSubHeaderLengths().get(i);
             fileLength += header.getImageSegmentDataLengths().get(i);
         }
+        // Also handles symbol segments in NITF 2.0 files.
         for (int i = 0; i < numberOfGraphicSegments; ++i) {
             fileLength += header.getGraphicSegmentSubHeaderLengths().get(i);
             fileLength += header.getGraphicSegmentDataLengths().get(i);
         }
-        // TODO: handle symbol segments for NITF 2.0
+        for (int i = 0; i < numberOfLabelSegments; ++i) {
+            fileLength += header.getLabelSegmentSubHeaderLengths().get(i);
+            fileLength += header.getLabelSegmentDataLengths().get(i);
+        }
         for (int i = 0; i < numberOfTextSegments; ++i) {
             fileLength += header.getTextSegmentSubHeaderLengths().get(i);
             fileLength += header.getTextSegmentDataLengths().get(i);
@@ -151,13 +178,25 @@ public class NitfFileWriter implements NitfWriter {
             writeFixedLengthNumber(header.getImageSegmentDataLengths().get(i), NitfConstants.LI_LENGTH);
         }
 
-        writeFixedLengthNumber(numberOfGraphicSegments, NitfConstants.NUMS_LENGTH);
-        for (int i = 0; i < numberOfGraphicSegments; ++i) {
-            writeFixedLengthNumber(header.getGraphicSegmentSubHeaderLengths().get(i), NitfConstants.LSSH_LENGTH);
-            writeFixedLengthNumber(header.getGraphicSegmentDataLengths().get(i), NitfConstants.LS_LENGTH);
+        if ((header.getFileType() == FileType.NITF_TWO_ONE) || (header.getFileType() == FileType.NSIF_ONE_ZERO)) {
+            writeFixedLengthNumber(numberOfGraphicSegments, NitfConstants.NUMS_LENGTH);
+            for (int i = 0; i < numberOfGraphicSegments; ++i) {
+                writeFixedLengthNumber(header.getGraphicSegmentSubHeaderLengths().get(i), NitfConstants.LSSH_LENGTH);
+                writeFixedLengthNumber(header.getGraphicSegmentDataLengths().get(i), NitfConstants.LS_LENGTH);
+            }
+            writeFixedLengthNumber(0, NitfConstants.NUMX_LENGTH);
+        } else {
+            writeFixedLengthNumber(numberOfGraphicSegments, NitfConstants.NUMS_LENGTH);
+            for (int i = 0; i < numberOfGraphicSegments; ++i) {
+                writeFixedLengthNumber(header.getSymbolSegmentSubHeaderLengths().get(i), NitfConstants.LSSH_LENGTH);
+                writeFixedLengthNumber(header.getSymbolSegmentDataLengths().get(i), NitfConstants.LS_LENGTH);
+            }
+            writeFixedLengthNumber(numberOfLabelSegments, NitfConstants.NUML20_LENGTH);
+            for (int i = 0; i < numberOfLabelSegments; ++i) {
+                writeFixedLengthNumber(header.getLabelSegmentSubHeaderLengths().get(i), NitfConstants.LLSH_LENGTH);
+                writeFixedLengthNumber(header.getLabelSegmentDataLengths().get(i), NitfConstants.LL_LENGTH);
+            }
         }
-        // TODO: handle properly, including NITF 2.0 case
-        writeFixedLengthNumber(0, NitfConstants.NUMX_LENGTH);
 
         writeFixedLengthNumber(numberOfTextSegments, NitfConstants.NUMT_LENGTH);
         for (int i = 0; i < numberOfTextSegments; ++i) {
@@ -207,7 +246,7 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthString(header.getImageDateTime().getSourceString(), NitfConstants.STANDARD_DATE_TIME_LENGTH);
         writeFixedLengthString(header.getImageTargetId().toString(), NitfConstants.TGTID_LENGTH);
         writeFixedLengthString(header.getImageIdentifier2(), NitfConstants.IID2_LENGTH);
-        writeSecurityMetadata(header.getSecurityMetadata());
+        writeSecurityMetadata(header.getSecurityMetadata(), fileType);
         writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
         writeFixedLengthString(header.getImageSource(), NitfConstants.ISORCE_LENGTH);
         writeFixedLengthNumber(header.getNumberOfRows(), NitfConstants.NROWS_LENGTH);
@@ -315,7 +354,7 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthString(NitfConstants.SY, NitfConstants.SY.length());
         writeFixedLengthString(header.getIdentifier(), NitfConstants.SID_LENGTH);
         writeFixedLengthString(header.getGraphicName(), NitfConstants.SNAME_LENGTH);
-        writeSecurityMetadata(header.getSecurityMetadata());
+        writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ONE);
         writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
         writeFixedLengthString(NitfConstants.SFMT_CGM, NitfConstants.SFMT_CGM.length());
         writeFixedLengthString(NitfConstants.SSTRUCT, NitfConstants.SSTRUCT.length());
@@ -346,50 +385,143 @@ public class NitfFileWriter implements NitfWriter {
         mOutputFile.write(graphicData);
     }
 
-    private void writeTextHeader(final NitfTextSegmentHeader header) throws IOException {
+    private void writeSymbolHeader(final NitfSymbolSegmentHeader header) throws IOException, ParseException {
+        writeFixedLengthString(NitfConstants.SY, NitfConstants.SY.length());
+        writeFixedLengthString(header.getIdentifier(), NitfConstants.SID_LENGTH);
+        writeFixedLengthString(header.getSymbolName(), NitfConstants.SNAME_LENGTH);
+        writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ZERO);
+        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString(header.getSymbolType().getTextEquivalent(), NitfConstants.SYTYPE_LENGTH);
+        writeFixedLengthNumber(header.getNumberOfLinesPerSymbol(), NitfConstants.NLIPS_LENGTH);
+        writeFixedLengthNumber(header.getNumberOfPixelsPerLine(), NitfConstants.NPIXPL_LENGTH);
+        writeFixedLengthNumber(header.getLineWidth(), NitfConstants.NWDTH_LENGTH);
+        writeFixedLengthNumber(header.getNumberOfBitsPerPixel(), NitfConstants.SYNBPP_LENGTH);
+        writeFixedLengthNumber(header.getSymbolDisplayLevel(), NitfConstants.SDLVL_LENGTH);
+        writeFixedLengthNumber(header.getAttachmentLevel(), NitfConstants.SALVL_LENGTH);
+        writeFixedLengthNumber(header.getSymbolLocationRow(), NitfConstants.SLOC_HALF_LENGTH);
+        writeFixedLengthNumber(header.getSymbolLocationColumn(), NitfConstants.SLOC_HALF_LENGTH);
+        writeFixedLengthNumber(header.getSymbolLocation2Row(), NitfConstants.SLOC_HALF_LENGTH);
+        writeFixedLengthNumber(header.getSymbolLocation2Column(), NitfConstants.SLOC_HALF_LENGTH);
+        writeFixedLengthString(header.getSymbolColour().getTextEquivalent(), NitfConstants.SCOLOR_LENGTH);
+        writeFixedLengthString(header.getSymbolNumber(), NitfConstants.SNUM_LENGTH);
+        writeFixedLengthNumber(header.getSymbolRotation(), NitfConstants.SROT_LENGTH);
+        // TODO: need to have a LUT list or similar in the symbol segment subheader
+        writeFixedLengthNumber(0, NitfConstants.SYNELUT_LENGTH);
+        byte[] symbolExtendedSubheaderData = getTREs(header, TreSource.SymbolExtendedSubheaderData);
+        int symbolExtendedSubheaderDataLength = symbolExtendedSubheaderData.length;
+        if (symbolExtendedSubheaderDataLength > 0) {
+            symbolExtendedSubheaderDataLength += NitfConstants.SXSOFL_LENGTH;
+        }
+        writeFixedLengthNumber(symbolExtendedSubheaderDataLength, NitfConstants.SXSHDL_LENGTH);
+        if (symbolExtendedSubheaderDataLength > 0) {
+            writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.SXSOFL_LENGTH);
+            mOutputFile.write(symbolExtendedSubheaderData);
+        }
+    }
+
+    private void writeSymbolData(final byte[] graphicData) throws IOException {
+        mOutputFile.write(graphicData);
+    }
+
+    private void writeLabelHeader(final NitfLabelSegmentHeader header) throws IOException, ParseException {
+        writeFixedLengthString(NitfConstants.LA, NitfConstants.LA.length());
+        writeFixedLengthString(header.getIdentifier(), NitfConstants.LID_LENGTH);
+        writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ZERO);
+        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString(" ", NitfConstants.LFS_LENGTH);
+        writeFixedLengthNumber(header.getLabelCellWidth(), NitfConstants.LCW_LENGTH);
+        writeFixedLengthNumber(header.getLabelCellHeight(), NitfConstants.LCH_LENGTH);
+        writeFixedLengthNumber(header.getLabelDisplayLevel(), NitfConstants.LDLVL_LENGTH);
+        writeFixedLengthNumber(header.getAttachmentLevel(), NitfConstants.LALVL_LENGTH);
+        writeFixedLengthNumber(header.getLabelLocationRow(), NitfConstants.LLOC_HALF_LENGTH);
+        writeFixedLengthNumber(header.getLabelLocationColumn(), NitfConstants.LLOC_HALF_LENGTH);
+        mOutputFile.write(header.getLabelTextColour().toByteArray());
+        mOutputFile.write(header.getLabelBackgroundColour().toByteArray());
+        byte[] labelExtendedSubheaderData = getTREs(header, TreSource.LabelExtendedSubheaderData);
+        int labelExtendedSubheaderDataLength = labelExtendedSubheaderData.length;
+        if (labelExtendedSubheaderDataLength > 0) {
+            labelExtendedSubheaderDataLength += NitfConstants.LXSOFL_LENGTH;
+        }
+        writeFixedLengthNumber(labelExtendedSubheaderDataLength, NitfConstants.LXSHDL_LENGTH);
+        if (labelExtendedSubheaderDataLength > 0) {
+            writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.LXSOFL_LENGTH);
+            mOutputFile.write(labelExtendedSubheaderData);
+        }
+    }
+
+    private void writeLabelData(final String labelData) throws IOException {
+        mOutputFile.writeBytes(labelData);
+    }
+
+    private void writeTextHeader(final NitfTextSegmentHeader header, final FileType fileType) throws IOException, ParseException {
         writeFixedLengthString(NitfConstants.TE, NitfConstants.TE.length());
-        writeFixedLengthString(header.getIdentifier(), NitfConstants.TEXTID_LENGTH);
-        writeFixedLengthNumber(header.getAttachmentLevel(), NitfConstants.TXTALVL_LENGTH);
+        if (fileType == FileType.NITF_TWO_ZERO) {
+            writeFixedLengthString(header.getIdentifier(), NitfConstants.TEXTID20_LENGTH);
+        } else {
+            writeFixedLengthString(header.getIdentifier(), NitfConstants.TEXTID_LENGTH);
+            writeFixedLengthNumber(header.getAttachmentLevel(), NitfConstants.TXTALVL_LENGTH);
+        }
         writeFixedLengthString(header.getTextDateTime().getSourceString(), NitfConstants.STANDARD_DATE_TIME_LENGTH);
         writeFixedLengthString(header.getTextTitle(), NitfConstants.TXTITL_LENGTH);
-        writeSecurityMetadata(header.getSecurityMetadata());
+        writeSecurityMetadata(header.getSecurityMetadata(), fileType);
         writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
         writeFixedLengthString(header.getTextFormat().getTextEquivalent(), NitfConstants.TXTFMT_LENGTH);
-        // TODO: Handle TREs properly
-        writeFixedLengthNumber(0, NitfConstants.TXSHDL_LENGTH);
+
+        byte[] textExtendedSubheaderData = getTREs(header, TreSource.TextExtendedSubheaderData);
+        int textExtendedSubheaderDataLength = textExtendedSubheaderData.length;
+        if (textExtendedSubheaderDataLength > 0) {
+            textExtendedSubheaderDataLength += NitfConstants.TXSOFL_LENGTH;
+        }
+        writeFixedLengthNumber(textExtendedSubheaderDataLength, NitfConstants.TXSHDL_LENGTH);
+        if (textExtendedSubheaderDataLength > 0) {
+            writeFixedLengthNumber(header.getExtendedHeaderDataOverflow(), NitfConstants.TXSOFL_LENGTH);
+            mOutputFile.write(textExtendedSubheaderData);
+        }
     }
 
     private void writeTextData(final String textData) throws IOException {
         mOutputFile.writeBytes(textData);
     }
 
-    private void writeDESHeader(final NitfDataExtensionSegmentHeader header, final FileType type) throws IOException {
+    private void writeDESHeader(final NitfDataExtensionSegmentHeader header, final FileType fileType) throws IOException, ParseException {
         writeFixedLengthString(NitfConstants.DE, NitfConstants.DE.length());
         writeFixedLengthString(header.getIdentifier(), NitfConstants.DESID_LENGTH);
         writeFixedLengthNumber(header.getDESVersion(), NitfConstants.DESVER_LENGTH);
-        writeSecurityMetadata(header.getSecurityMetadata());
-        if (header.isTreOverflow(type)) {
+        writeSecurityMetadata(header.getSecurityMetadata(), fileType);
+        if (header.isTreOverflow(fileType)) {
             writeFixedLengthString(header.getOverflowedHeaderType(), NitfConstants.DESOFLW_LENGTH);
             writeFixedLengthNumber(header.getItemOverflowed(), NitfConstants.DESITEM_LENGTH);
         }
         writeFixedLengthNumber(header.getUserDefinedSubheaderField().length(), NitfConstants.DESSHL_LENGTH);
         if (header.getUserDefinedSubheaderField().length() > 0) {
             mOutputFile.writeBytes(header.getUserDefinedSubheaderField());
+        } else {
+            byte[] treData = getTREs(header, TreSource.TreOverflowDES);
+            mOutputFile.write(treData);
         }
     }
 
     private void writeDESData(final byte[] desData) throws IOException {
-        mOutputFile.write(desData);
+        if (desData != null) {
+            mOutputFile.write(desData);
+        }
     }
 
-    private void writeFileSecurityMetadata(final NitfFileSecurityMetadata fsmeta) throws IOException {
-        writeSecurityMetadata(fsmeta);
+    private void writeFileSecurityMetadata(final NitfFileSecurityMetadata fsmeta, final FileType fileType) throws IOException {
+        writeSecurityMetadata(fsmeta, fileType);
         writeFixedLengthString(fsmeta.getFileCopyNumber(), NitfConstants.FSCOP_LENGTH);
         writeFixedLengthString(fsmeta.getFileNumberOfCopies(), NitfConstants.FSCPYS_LENGTH);
     }
 
-    private void writeSecurityMetadata(final NitfSecurityMetadata securityMetadata) throws IOException {
-        // TODO: make this handle NITF 2.0 too.
+    private void writeSecurityMetadata(final NitfSecurityMetadata securityMetadata, final FileType fileType) throws IOException {
+        if (fileType == FileType.NITF_TWO_ZERO) {
+            writeSecurityMetadata20(securityMetadata);
+        } else {
+            writeSecurityMetadata21(securityMetadata);
+        }
+    }
+
+    private void writeSecurityMetadata21(final NitfSecurityMetadata securityMetadata) throws IOException {
         writeFixedLengthString(securityMetadata.getSecurityClassification().getTextEquivalent(), NitfConstants.XSCLAS_LENGTH);
         writeFixedLengthString(securityMetadata.getSecurityClassificationSystem(), NitfConstants.XSCLSY_LENGTH);
         writeFixedLengthString(securityMetadata.getCodewords(), NitfConstants.XSCODE_LENGTH);
@@ -407,4 +539,18 @@ public class NitfFileWriter implements NitfWriter {
         writeFixedLengthString(securityMetadata.getSecuritySourceDate(), NitfConstants.XSSRDT_LENGTH);
         writeFixedLengthString(securityMetadata.getSecurityControlNumber(), NitfConstants.XSCTLN_LENGTH);
     }
+
+    private void writeSecurityMetadata20(final NitfSecurityMetadata securityMetadata) throws IOException {
+        writeFixedLengthString(securityMetadata.getSecurityClassification().getTextEquivalent(), NitfConstants.XSCLAS_LENGTH);
+        writeFixedLengthString(securityMetadata.getCodewords(), NitfConstants.XSCODE20_LENGTH);
+        writeFixedLengthString(securityMetadata.getControlAndHandling(), NitfConstants.XSCTLH20_LENGTH);
+        writeFixedLengthString(securityMetadata.getReleaseInstructions(), NitfConstants.XSREL20_LENGTH);
+        writeFixedLengthString(securityMetadata.getClassificationAuthority(), NitfConstants.XSCAUT20_LENGTH);
+        writeFixedLengthString(securityMetadata.getSecurityControlNumber(), NitfConstants.XSCTLN20_LENGTH);
+        writeFixedLengthString(securityMetadata.getDowngradeDateOrSpecialCase(), NitfConstants.XSDWNG20_LENGTH);
+        if (DOWNGRADE_EVENT_MAGIC.equals(securityMetadata.getDowngradeDateOrSpecialCase())) {
+            writeFixedLengthString(securityMetadata.getDowngradeEvent(), NitfConstants.XSDEVT20_LENGTH);
+        }
+    }
+
 }

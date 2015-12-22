@@ -28,6 +28,9 @@ public class RGBColour {
 
     private static final int REQUIRED_DATA_LENGTH = 3;
     private static final int UNSIGNED_BYTE_MASK = 0xFF;
+    private static final int RED_OFFSET = 0;
+    private static final int GREEN_OFFSET = 1;
+    private static final int BLUE_OFFSET = 2;
 
     /**
         Constructor.
@@ -39,9 +42,9 @@ public class RGBColour {
         if (rgb.length != REQUIRED_DATA_LENGTH) {
             throw new ParseException("Incorrect number of bytes in RGB constructor array", 0);
         }
-        red = rgb[0];
-        green = rgb[1];
-        blue = rgb[2];
+        red = rgb[RED_OFFSET];
+        green = rgb[GREEN_OFFSET];
+        blue = rgb[BLUE_OFFSET];
     }
 
     /**
@@ -88,5 +91,20 @@ public class RGBColour {
         return new Color((int) (red & UNSIGNED_BYTE_MASK),
                          (int) (green & UNSIGNED_BYTE_MASK),
                          (int) (blue & UNSIGNED_BYTE_MASK));
+    }
+
+    /**
+     * Return the RGBColour as a byte array.
+     *
+     * This is the same format as was read in (so is suitable for writing out).
+     *
+     * @return the colour as a byte array
+     */
+    public final byte[] toByteArray() {
+        byte[] bytes = new byte[REQUIRED_DATA_LENGTH];
+        bytes[RED_OFFSET] = red;
+        bytes[GREEN_OFFSET] = green;
+        bytes[BLUE_OFFSET] = blue;
+        return bytes;
     }
 }

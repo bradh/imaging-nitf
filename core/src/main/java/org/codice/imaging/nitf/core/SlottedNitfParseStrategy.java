@@ -647,6 +647,7 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
                         dataExtensionSegmentHeader.getDataExtensionSegmentDataLength(),
                         TreSource.TreOverflowDES);
                 dataExtensionSegmentHeader.mergeTREs(overflowTres);
+                dataExtensionSegmentData.add(null);
             } else if (!"STREAMING_FILE_HEADER".equals(dataExtensionSegmentHeader.getIdentifier().trim())) {
                 dataExtensionSegmentData.add(reader.readBytesRaw(dataExtensionSegmentHeader.getDataExtensionSegmentDataLength()));
             }

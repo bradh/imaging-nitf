@@ -108,6 +108,51 @@ public class BasicWriterTest {
         roundTripFile("/gdal3453.ntf");
     }
 
+    @Test
+    public void roundTripNitf20_U1001A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1001A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1034A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1034A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1036A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1036A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1050A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1050A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1060A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1060A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1101A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1101A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1114A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1114A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1122A() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1122A.NTF");
+    }
+
+    @Test
+    public void roundTripNitf20_U1130F() throws IOException, ParseException, URISyntaxException {
+        roundTripFile("/JitcNitf20Samples/U_1130F.NTF");
+    }
+
     private void roundTripFile(String sourceFileName) throws URISyntaxException, ParseException, IOException {
         String outputFile = FilenameUtils.getName(sourceFileName);
 
