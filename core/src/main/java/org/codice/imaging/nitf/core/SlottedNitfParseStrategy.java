@@ -650,6 +650,8 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
                 dataExtensionSegmentData.add(null);
             } else if (!"STREAMING_FILE_HEADER".equals(dataExtensionSegmentHeader.getIdentifier().trim())) {
                 dataExtensionSegmentData.add(reader.readBytesRaw(dataExtensionSegmentHeader.getDataExtensionSegmentDataLength()));
+            } else {
+                dataExtensionSegmentData.add(null);
             }
         }
     }
