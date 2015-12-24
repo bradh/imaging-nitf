@@ -20,7 +20,7 @@ import java.text.ParseException;
 import org.junit.Test;
 
 /**
- * Tests for writing NITF file - common cases
+ * Tests for writing NITF file - basic cases.
  */
 public class BasicWriterTest extends AbstractWriterTest {
 

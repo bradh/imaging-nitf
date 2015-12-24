@@ -16,8 +16,10 @@ package org.codice.imaging.nitf.core;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -41,6 +43,13 @@ class AbstractWriterTest {
         SlottedNitfParseStrategy parseStrategy = new AllDataExtractionParseStrategy();
         NitfFileParser.parse(reader, parseStrategy);
         NitfWriter writer = new NitfFileWriter(parseStrategy, outputFile);
+        writer.write();
+        assertTrue(FileUtils.contentEquals(new File(getClass().getResource(sourceFileName).toURI()), new File(outputFile)));
+        assertTrue(new File(outputFile).delete());
+
+        // Do the same again, but with stream writing
+        OutputStream outputStream = new FileOutputStream(outputFile);
+        writer = new NitfOutputStreamWriter(parseStrategy, outputStream);
         writer.write();
         assertTrue(FileUtils.contentEquals(new File(getClass().getResource(sourceFileName).toURI()), new File(outputFile)));
         assertTrue(new File(outputFile).delete());

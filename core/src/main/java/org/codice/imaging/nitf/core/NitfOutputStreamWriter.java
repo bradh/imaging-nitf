@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 (c) Codice Foundation
+ * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
  * General Public License as published by the Free Software Foundation, either version 3 of the
@@ -14,40 +14,36 @@
  */
 package org.codice.imaging.nitf.core;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A NitfWriter implementation that works on files.
+ * A NitfWriter implementation that works on streaming data.
  */
-public class NitfFileWriter extends SharedNitfWriter {
-
-    private String mOutputFileName = null;
+public class NitfOutputStreamWriter extends SharedNitfWriter {
 
     /**
-     * Construct a file-based NITF writer.
+     * Construct a stream-based NITF writer.
      *
-     * @param nitfDataSource the source of data to be written out
-     * @param outputFileName the name (including path) of the target file
+     * @param nitfDataSource the source of data to be written out.
+     * @param outputStream the output stream to write the data to.
      */
-    public NitfFileWriter(final SlottedNitfParseStrategy nitfDataSource, final String outputFileName) {
+    public NitfOutputStreamWriter(final SlottedNitfParseStrategy nitfDataSource, final OutputStream outputStream) {
         super(nitfDataSource);
-        mOutputFileName = outputFileName;
+        mOutput = new DataOutputStream(outputStream);
     }
 
     @Override
     public final void write() {
         try {
-            try (RandomAccessFile outputFile = new RandomAccessFile(mOutputFileName, NitfConstants.WRITE_MODE)) {
-                outputFile.setLength(0);
-                mOutput = outputFile;
-                writeData();
-            }
-        } catch (IOException | ParseException ex) {
-            Logger.getLogger(NitfFileWriter.class.getName()).log(Level.SEVERE, null, ex);
+            writeData();
+        } catch (ParseException | IOException ex) {
+            Logger.getLogger(NitfOutputStreamWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
