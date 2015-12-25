@@ -171,12 +171,12 @@ public abstract class SharedNitfWriter implements NitfWriter {
         int numberOfTextSegments = header.getTextSegmentDataLengths().size();
         byte[] userDefinedHeaderData = getTREs(header, TreSource.UserDefinedHeaderData);
         int userDefinedHeaderDataLength = userDefinedHeaderData.length;
-        if (userDefinedHeaderDataLength > 0) {
+        if ((userDefinedHeaderDataLength > 0) || (header.getUserDefinedHeaderOverflow() != 0)) {
             userDefinedHeaderDataLength += NitfConstants.UDHOFL_LENGTH;
         }
         byte[] extendedHeaderData = getTREs(header, TreSource.ExtendedHeaderData);
         int extendedHeaderDataLength = extendedHeaderData.length;
-        if (extendedHeaderDataLength > 0) {
+        if ((extendedHeaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             extendedHeaderDataLength += NitfConstants.XHDLOFL_LENGTH;
         }
         int headerLength = BASIC_HEADER_LENGTH
@@ -315,7 +315,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(NitfConstants.SRES, NitfConstants.SRES.length()); // SRES2
         byte[] graphicExtendedSubheaderData = getTREs(header, TreSource.GraphicExtendedSubheaderData);
         int graphicExtendedSubheaderDataLength = graphicExtendedSubheaderData.length;
-        if (graphicExtendedSubheaderDataLength > 0) {
+        if ((graphicExtendedSubheaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             graphicExtendedSubheaderDataLength += NitfConstants.SXSOFL_LENGTH;
         }
         writeFixedLengthNumber(graphicExtendedSubheaderDataLength, NitfConstants.SXSHDL_LENGTH);
@@ -395,7 +395,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(header.getImageMagnification(), NitfConstants.IMAG_LENGTH);
         byte[] userDefinedImageData = getTREs(header, TreSource.UserDefinedImageData);
         int userDefinedImageDataLength = userDefinedImageData.length;
-        if (userDefinedImageDataLength > 0) {
+        if ((userDefinedImageDataLength > 0) || (header.getUserDefinedHeaderOverflow() != 0)) {
             userDefinedImageDataLength += NitfConstants.UDOFL_LENGTH;
         }
         writeFixedLengthNumber(userDefinedImageDataLength, NitfConstants.UDIDL_LENGTH);
@@ -405,7 +405,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         }
         byte[] imageExtendedSubheaderData = getTREs(header, TreSource.ImageExtendedSubheaderData);
         int imageExtendedSubheaderDataLength = imageExtendedSubheaderData.length;
-        if (imageExtendedSubheaderDataLength > 0) {
+        if ((imageExtendedSubheaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             imageExtendedSubheaderDataLength += NitfConstants.IXSOFL_LENGTH;
         }
         writeFixedLengthNumber(imageExtendedSubheaderDataLength, NitfConstants.IXSHDL_LENGTH);
@@ -435,7 +435,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         mOutput.write(header.getLabelBackgroundColour().toByteArray());
         byte[] labelExtendedSubheaderData = getTREs(header, TreSource.LabelExtendedSubheaderData);
         int labelExtendedSubheaderDataLength = labelExtendedSubheaderData.length;
-        if (labelExtendedSubheaderDataLength > 0) {
+        if ((labelExtendedSubheaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             labelExtendedSubheaderDataLength += NitfConstants.LXSOFL_LENGTH;
         }
         writeFixedLengthNumber(labelExtendedSubheaderDataLength, NitfConstants.LXSHDL_LENGTH);
@@ -513,7 +513,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthNumber(0, NitfConstants.SYNELUT_LENGTH);
         byte[] symbolExtendedSubheaderData = getTREs(header, TreSource.SymbolExtendedSubheaderData);
         int symbolExtendedSubheaderDataLength = symbolExtendedSubheaderData.length;
-        if (symbolExtendedSubheaderDataLength > 0) {
+        if ((symbolExtendedSubheaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             symbolExtendedSubheaderDataLength += NitfConstants.SXSOFL_LENGTH;
         }
         writeFixedLengthNumber(symbolExtendedSubheaderDataLength, NitfConstants.SXSHDL_LENGTH);
@@ -542,7 +542,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(header.getTextFormat().getTextEquivalent(), NitfConstants.TXTFMT_LENGTH);
         byte[] textExtendedSubheaderData = getTREs(header, TreSource.TextExtendedSubheaderData);
         int textExtendedSubheaderDataLength = textExtendedSubheaderData.length;
-        if (textExtendedSubheaderDataLength > 0) {
+        if ((textExtendedSubheaderDataLength > 0) || (header.getExtendedHeaderDataOverflow() != 0)) {
             textExtendedSubheaderDataLength += NitfConstants.TXSOFL_LENGTH;
         }
         writeFixedLengthNumber(textExtendedSubheaderDataLength, NitfConstants.TXSHDL_LENGTH);
