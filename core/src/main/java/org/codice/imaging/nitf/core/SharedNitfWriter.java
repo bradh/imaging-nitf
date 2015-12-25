@@ -29,6 +29,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
     private static final String DOWNGRADE_EVENT_MAGIC = "999998";
     private static final int NUM_PARTS_IN_IGEOLO = 4;
     private static final String STREAMING_FILE_HEADER = "STREAMING_FILE_HEADER";
+    private static final int MAX_NUM_BANDS_IN_NBANDS_FIELD = 9;
 
     private TreParser mTreParser = null;
     private SlottedNitfParseStrategy mDataSource = null;
@@ -365,7 +366,14 @@ public abstract class SharedNitfWriter implements NitfWriter {
                 && (header.getImageCompression() != ImageCompression.NOTCOMPRESSEDMASK)) {
             writeFixedLengthString(header.getCompressionRate(), NitfConstants.COMRAT_LENGTH);
         }
-        writeFixedLengthNumber(header.getNumBands(), NitfConstants.NBANDS_LENGTH);
+
+        if (header.getNumBands() <= MAX_NUM_BANDS_IN_NBANDS_FIELD) {
+            writeFixedLengthNumber(header.getNumBands(), NitfConstants.NBANDS_LENGTH);
+        } else {
+            writeFixedLengthNumber(0, NitfConstants.NBANDS_LENGTH);
+            writeFixedLengthNumber(header.getNumBands(), NitfConstants.XBANDS_LENGTH);
+        }
+
         for (int i = 0; i < header.getNumBands(); ++i) {
             NitfImageBand band = header.getImageBandZeroBase(i);
             writeFixedLengthString(band.getImageRepresentation(), NitfConstants.IREPBAND_LENGTH);
