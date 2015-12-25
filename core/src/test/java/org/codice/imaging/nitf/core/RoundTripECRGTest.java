@@ -20,8 +20,7 @@ import java.text.ParseException;
 import org.junit.Test;
 
 /**
- *
- * @author bradh
+ * Tests for ECRG profile of NITF.
  */
 public class RoundTripECRGTest extends AbstractWriterTest {
 
