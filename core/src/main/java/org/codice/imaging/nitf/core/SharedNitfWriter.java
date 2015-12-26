@@ -141,10 +141,10 @@ public abstract class SharedNitfWriter implements NitfWriter {
     }
 
     private void writeImageSegments() throws ParseException, IOException {
-        int numberOfImageSegments = mDataSource.imageSegmentHeaders.size();
+        int numberOfImageSegments = mDataSource.getImageSegmentHeaders().size();
         for (int i = 0; i < numberOfImageSegments; ++i) {
-            writeImageHeader(mDataSource.imageSegmentHeaders.get(i), mDataSource.nitfFileLevelHeader.getFileType());
-            writeImageData(mDataSource.imageSegmentData.get(i));
+            writeImageHeader(mDataSource.getImageSegmentHeaders().get(i), mDataSource.nitfFileLevelHeader.getFileType());
+            writeImageData(mDataSource.getImageSegmentData().get(i));
         }
     }
 
@@ -166,10 +166,10 @@ public abstract class SharedNitfWriter implements NitfWriter {
             writeFixedLengthString(header.getOriginatorsName(), NitfConstants.ONAME20_LENGTH);
         }
         writeFixedLengthString(header.getOriginatorsPhoneNumber(), NitfConstants.OPHONE_LENGTH);
-        int numberOfImageSegments = header.getImageSegmentDataLengths().size();
-        int numberOfGraphicSegments = header.getGraphicSegmentDataLengths().size();
-        int numberOfLabelSegments = header.getLabelSegmentDataLengths().size();
-        int numberOfTextSegments = header.getTextSegmentDataLengths().size();
+        int numberOfImageSegments = header.getImageSegmentSubHeaderLengths().size();
+        int numberOfGraphicSegments = header.getGraphicSegmentSubHeaderLengths().size();
+        int numberOfLabelSegments = header.getLabelSegmentSubHeaderLengths().size();
+        int numberOfTextSegments = header.getTextSegmentSubHeaderLengths().size();
         byte[] userDefinedHeaderData = getTREs(header, TreSource.UserDefinedHeaderData);
         int userDefinedHeaderDataLength = userDefinedHeaderData.length;
         if ((userDefinedHeaderDataLength > 0) || (header.getUserDefinedHeaderOverflow() != 0)) {
@@ -327,7 +327,9 @@ public abstract class SharedNitfWriter implements NitfWriter {
     }
 
     private void writeImageData(final byte[] imageData) throws IOException {
-        mOutput.write(imageData);
+        if (imageData != null && imageData.length > 0) {
+            mOutput.write(imageData);
+        }
     }
 
     private void writeImageHeader(final NitfImageSegmentHeader header, final FileType fileType) throws IOException, ParseException {
