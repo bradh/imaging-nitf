@@ -50,6 +50,8 @@
                     <include>**/*.nsf</include>
                     <include>**/*.lf2</include>
                     <include>**/*.ntf.r?</include>
+                    <include>**/*.GN3</include>
+                    <include>**/*.on1</include>
                     <include>SENSRB/*.txt</include>
                 </includes>
             </configuration>

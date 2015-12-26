@@ -1573,6 +1573,7 @@
         <field name="SUN_AZ" length="5"/>
     </tre>
 
+<!-- This doesn't work yet
     <tre name="RPFHDR" length="62" location="file">
         <field name="ENDIANESS_FLAG" length="1"/>
         <field name="HEADER_SECT_LENGTH" length="2"/>
@@ -1585,5 +1586,5 @@
         <field name="RELEASABLE" length="2"/>
         <field name="LOCATIONSECT" length="4"/>
     </tre>
-
+-->
 </tres>
