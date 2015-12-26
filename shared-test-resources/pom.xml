@@ -49,6 +49,7 @@
                     <include>**/*.NTF</include>
                     <include>**/*.nsf</include>
                     <include>**/*.lf2</include>
+                    <include>**/*.ntf.r?</include>
                     <include>SENSRB/*.txt</include>
                 </includes>
             </configuration>
