@@ -29,13 +29,6 @@ public interface NitfParseStrategy {
     void setFileHeader(Nitf nitf);
 
     /**
-     * Return the file-level header for the parsed file.
-     *
-     * @return the file-level header
-     */
-    Nitf getNitfHeader();
-
-    /**
      * Indication that the "base" file-level headers have been read.
      *
      * @param reader the reader, positioned for reading of the segments

@@ -15,70 +15,12 @@
 package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.transform.Source;
 
 /**
  * "Slotted" parse strategy.
- * This could probably be split into
- * an abstract parent called SlottedNitfParseStrategy
- * and
- * the abstract subclass with the data storage (SlottedStorageNitfParseStrategy)
  */
-public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
-    /**
-     * The file level header.
-     */
-    protected Nitf nitfFileLevelHeader;
-    /**
-     * The list of image segment headers.
-     */
-    protected final List<NitfImageSegmentHeader> imageSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of image segment data.
-     */
-    protected final List<byte[]> imageSegmentData = new ArrayList<>();
-    /**
-     * The list of graphic segment headers.
-     */
-    protected final List<NitfGraphicSegmentHeader> graphicSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of graphic segment data.
-     */
-    protected final List<byte[]> graphicSegmentData = new ArrayList<>();
-    /**
-     * The list of symbol segment headers.
-     */
-    protected final List<NitfSymbolSegmentHeader> symbolSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of symbol segment data.
-     */
-    protected final List<byte[]> symbolSegmentData = new ArrayList<>();
-    /**
-     * The list of label segment headers.
-     */
-    protected final List<NitfLabelSegmentHeader> labelSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of label segment data.
-     */
-    protected final List<String> labelSegmentData = new ArrayList<>();
-    /**
-     * The list of text segment headers.
-     */
-    protected final ArrayList<NitfTextSegmentHeader> textSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of text segment data.
-     */
-    protected final ArrayList<String> textSegmentData = new ArrayList<>();
-    /**
-     * The list of DES headers.
-     */
-    protected final List<NitfDataExtensionSegmentHeader> dataExtensionSegmentHeaders = new ArrayList<>();
-    /**
-     * The list of DES data.
-     */
-    protected final List<byte[]> dataExtensionSegmentData = new ArrayList<>();
+public abstract class SlottedNitfParseStrategy extends SlottedNitfStorage implements NitfParseStrategy {
 
     /**
      * The TRE parser to use. Must be initialised before use, see initialiseTreCollectionParserIfRequired()
@@ -95,56 +37,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
     @Override
     public final void setFileHeader(final Nitf nitf) {
         nitfFileLevelHeader = nitf;
-    }
-
-    @Override
-    public final Nitf getNitfHeader() {
-        return nitfFileLevelHeader;
-    }
-
-    /**
-     * Return the list of image segment data.
-     *
-     * @return image segment data
-     */
-    public final List<byte[]> getImageSegmentData() {
-        return imageSegmentData;
-    }
-
-    /**
-     * Return the list of symbol segment data.
-     *
-     * @return symbol segment data
-     */
-    public final List<byte[]> getSymbolSegmentData() {
-        return symbolSegmentData;
-    }
-
-    /**
-     * Return list of label segment data.
-     *
-     * @return label segment data
-     */
-    public final List<String> getLabelSegmentData() {
-        return labelSegmentData;
-    }
-
-    /**
-     * Return list of graphic segment data.
-     *
-     * @return graphic segment data
-     */
-    public final List<byte[]> getGraphicSegmentData() {
-        return graphicSegmentData;
-    }
-
-    /**
-     * Return list of text segment data.
-     *
-     * @return text segment data
-     */
-    public final List<String> getTextSegmentData() {
-        return textSegmentData;
     }
 
     @Override
@@ -674,59 +566,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
     }
 //</editor-fold>
 
-    /**
-     * Return the image segment headers associated with this file.
-     *
-     * @return image segment headers
-     */
-    public final List<NitfImageSegmentHeader> getImageSegmentHeaders() {
-        return imageSegmentHeaders;
-    }
-
-    /**
-     * Return the graphic segment headers associated with this file.
-     *
-     * @return graphic segment headers
-     */
-    public final List<NitfGraphicSegmentHeader> getGraphicSegmentHeaders() {
-        return graphicSegmentHeaders;
-    }
-
-    /**
-     * Return the symbol segment headers associated with this file.
-     *
-     * @return symbol segment headers
-     */
-    public final List<NitfSymbolSegmentHeader> getSymbolSegmentHeaders() {
-        return symbolSegmentHeaders;
-    }
-
-    /**
-     * Return the label segment headers associated with this file.
-     *
-     * @return label segment headers
-     */
-    public final List<NitfLabelSegmentHeader> getLabelSegmentHeaders() {
-        return labelSegmentHeaders;
-    }
-
-    /**
-     * Return the text segments associated with this file.
-     *
-     * @return text segments
-     */
-    public final List<NitfTextSegmentHeader> getTextSegmentHeaders() {
-        return textSegmentHeaders;
-    }
-
-    /**
-     * Return the data extension segment headers associated with this file.
-     *
-     * @return data extension segment headers
-     */
-    public final List<NitfDataExtensionSegmentHeader> getDataExtensionSegmentHeaders() {
-         return dataExtensionSegmentHeaders;
-    }
 
     /**
      * Handle the image segment header and data.

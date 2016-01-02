@@ -33,6 +33,19 @@ public class RGBColour {
     private static final int BLUE_OFFSET = 2;
 
     /**
+     * Red component of the main blue colour in the Codice logo.
+     */
+    public static final byte CODICE_LOGO_RED_COMPONENT = 0;
+    /**
+     * Green component of the main blue colour in the Codice logo.
+     */
+    public static final byte CODICE_LOGO_GREEN_COMPONENT = 59;
+    /**
+     * Blue component of the main blue colour in the Codice logo.
+     */
+    public static final byte CODICE_LOGO_BLUE_COMPONENT = 121;
+
+    /**
         Constructor.
 
         @param rgb three element array of the red, green and blue component values for the colour
@@ -45,6 +58,19 @@ public class RGBColour {
         red = rgb[RED_OFFSET];
         green = rgb[GREEN_OFFSET];
         blue = rgb[BLUE_OFFSET];
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param redComponent the red component value for the colour
+     * @param greenComponent the green component value for the colour
+     * @param blueComponent the blue component value for the colour
+     */
+    public RGBColour(final byte redComponent, final byte greenComponent, final byte blueComponent) {
+        red = redComponent;
+        green = greenComponent;
+        blue = blueComponent;
     }
 
     /**

@@ -32,7 +32,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
     private static final int MAX_NUM_BANDS_IN_NBANDS_FIELD = 9;
 
     private TreParser mTreParser = null;
-    private SlottedNitfParseStrategy mDataSource = null;
+    private NitfDataSource mDataSource = null;
 
     /**
      * The target to write the data to.
@@ -44,7 +44,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
      *
      * @param dataSource the parseStrategy that provides the data to be written out.
      */
-    protected SharedNitfWriter(final SlottedNitfParseStrategy dataSource) {
+    protected SharedNitfWriter(final NitfDataSource dataSource) {
         mDataSource = dataSource;
     }
 
@@ -88,7 +88,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
      */
     protected final void writeData() throws ParseException, IOException {
         mTreParser = new TreParser();
-        writeFileHeader(mDataSource.nitfFileLevelHeader);
+        writeFileHeader();
         writeImageSegments();
         writeGraphicSegments();
         writeSymbolSegments();
@@ -98,26 +98,26 @@ public abstract class SharedNitfWriter implements NitfWriter {
     }
 
     private void writeDataExtensionSegments() throws ParseException, IOException {
-        int numberOfDataExtensionSegments = mDataSource.dataExtensionSegmentHeaders.size();
+        int numberOfDataExtensionSegments = mDataSource.getDataExtensionSegmentHeaders().size();
         for (int i = 0; i < numberOfDataExtensionSegments; ++i) {
-            if (STREAMING_FILE_HEADER.equals(mDataSource.dataExtensionSegmentHeaders.get(i).getIdentifier().trim())) {
+            if (STREAMING_FILE_HEADER.equals(mDataSource.getDataExtensionSegmentHeaders().get(i).getIdentifier().trim())) {
                 continue;
             }
-            writeDESHeader(mDataSource.dataExtensionSegmentHeaders.get(i), mDataSource.nitfFileLevelHeader.getFileType());
-            writeDESData(mDataSource.dataExtensionSegmentData.get(i));
+            writeDESHeader(mDataSource.getDataExtensionSegmentHeaders().get(i), mDataSource.getNitfHeader().getFileType());
+            writeDESData(mDataSource.getDataExtensionSegmentData().get(i));
         }
     }
 
     private void writeTextSegments() throws ParseException, IOException {
-        int numberOfTextSegments = mDataSource.textSegmentHeaders.size();
+        int numberOfTextSegments = mDataSource.getTextSegmentHeaders().size();
         for (int i = 0; i < numberOfTextSegments; ++i) {
-            writeTextHeader(mDataSource.textSegmentHeaders.get(i), mDataSource.nitfFileLevelHeader.getFileType());
-            writeTextData(mDataSource.textSegmentData.get(i));
+            writeTextHeader(mDataSource.getTextSegmentHeaders().get(i), mDataSource.getNitfHeader().getFileType());
+            writeTextData(mDataSource.getTextSegmentData().get(i));
         }
     }
 
     private void writeLabelSegments() throws IOException, ParseException {
-        int numberOfLabelSegments = mDataSource.labelSegmentHeaders.size();
+        int numberOfLabelSegments = mDataSource.getLabelSegmentHeaders().size();
         for (int i = 0; i < numberOfLabelSegments; ++i) {
             writeLabelHeader(mDataSource.getLabelSegmentHeaders().get(i));
             writeLabelData(mDataSource.getLabelSegmentData().get(i));
@@ -125,30 +125,31 @@ public abstract class SharedNitfWriter implements NitfWriter {
     }
 
     private void writeSymbolSegments() throws ParseException, IOException {
-        int numberOfSymbolSegments = mDataSource.symbolSegmentHeaders.size();
+        int numberOfSymbolSegments = mDataSource.getSymbolSegmentHeaders().size();
         for (int i = 0; i < numberOfSymbolSegments; ++i) {
-            writeSymbolHeader(mDataSource.symbolSegmentHeaders.get(i));
-            writeSymbolData(mDataSource.symbolSegmentData.get(i));
+            writeSymbolHeader(mDataSource.getSymbolSegmentHeaders().get(i));
+            writeSymbolData(mDataSource.getSymbolSegmentData().get(i));
         }
     }
 
     private void writeGraphicSegments() throws IOException, ParseException {
-        int numberOfGraphicSegments = mDataSource.graphicSegmentHeaders.size();
+        int numberOfGraphicSegments = mDataSource.getGraphicSegmentHeaders().size();
         for (int i = 0; i < numberOfGraphicSegments; ++i) {
-            writeGraphicHeader(mDataSource.graphicSegmentHeaders.get(i));
-            writeGraphicData(mDataSource.graphicSegmentData.get(i));
+            writeGraphicHeader(mDataSource.getGraphicSegmentHeaders().get(i));
+            writeGraphicData(mDataSource.getGraphicSegmentData().get(i));
         }
     }
 
     private void writeImageSegments() throws ParseException, IOException {
         int numberOfImageSegments = mDataSource.getImageSegmentHeaders().size();
         for (int i = 0; i < numberOfImageSegments; ++i) {
-            writeImageHeader(mDataSource.getImageSegmentHeaders().get(i), mDataSource.nitfFileLevelHeader.getFileType());
+            writeImageHeader(mDataSource.getImageSegmentHeaders().get(i), mDataSource.getNitfHeader().getFileType());
             writeImageData(mDataSource.getImageSegmentData().get(i));
         }
     }
 
-    private void writeFileHeader(final Nitf header) throws IOException, ParseException {
+    private void writeFileHeader() throws IOException, ParseException {
+        Nitf header = mDataSource.getNitfHeader();
         mOutput.writeBytes(header.getFileType().getTextEquivalent());
         writeFixedLengthNumber(header.getComplexityLevel(), NitfConstants.CLEVEL_LENGTH);
         writeFixedLengthString(header.getStandardType(), NitfConstants.STYPE_LENGTH);

@@ -26,6 +26,9 @@ public class NitfFileSecurityMetadata extends NitfSecurityMetadata {
     private String nitfFileCopyNumber = null;
     private String nitfFileNumberOfCopies = null;
 
+    private NitfFileSecurityMetadata() {
+    }
+
     /**
         Constructor.
         <p>
@@ -93,5 +96,22 @@ public class NitfFileSecurityMetadata extends NitfSecurityMetadata {
         return nitfFileNumberOfCopies;
     }
 
+    /**
+     * Create default file-level security metadata.
+     *
+     * This is intended for making base (default) level security metadata, and some changes will probably be required
+     * depending on application needs. In particular, you probably need to set the security classification system to
+     * reflect your national needs if you care about these fields.
+     *
+     * @param fileType the type (version) of NITF file to build the security metadata for.
+     * @return default unclassified security metadata
+     */
+    public static NitfFileSecurityMetadata getDefaultMetadata(final FileType fileType) {
+        NitfFileSecurityMetadata defaultMetadata = new NitfFileSecurityMetadata();
+        fillDefaultMetadata(defaultMetadata, fileType);
+        defaultMetadata.setFileCopyNumber(spaceFillForLength(NitfConstants.FSCOP_LENGTH));
+        defaultMetadata.setFileNumberOfCopies(spaceFillForLength(NitfConstants.FSCPYS_LENGTH));
+        return defaultMetadata;
+    }
 };
 

@@ -14,8 +14,12 @@
  */
 package org.codice.imaging.nitf.core;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import static org.codice.imaging.nitf.core.NitfConstants.NITF21_DATE_FORMAT;
 
 /**
     NITF file data.
@@ -44,6 +48,9 @@ public class Nitf extends AbstractNitfSegment {
     private final List<Integer> lt = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
     private final List<Integer> ld = new ArrayList<>();
+
+    private static final int LOWEST_COMPLEXITY_LEVEL = 3;
+    private static final String STANDARD_TYPE_VAL = "BF01";
 
     /**
         Default constructor.
@@ -442,4 +449,45 @@ public class Nitf extends AbstractNitfSegment {
     public final int getExtendedHeaderDataOverflow() {
         return nitfExtendedHeaderDataOverflow;
     }
+
+    /**
+     * Create a default NITF file header.
+     *
+     * @param fileType the type (version) of NITF file to create
+     * @return default valid header.
+     */
+    public static Nitf getDefault(final FileType fileType) {
+        Nitf nitf = new Nitf();
+        nitf.setFileType(fileType);
+        nitf.setComplexityLevel(LOWEST_COMPLEXITY_LEVEL);
+        nitf.setStandardType(STANDARD_TYPE_VAL);
+        nitf.setOriginatingStationId("");
+        NitfDateTime ndt = getNitfDateTimeForNow();
+        nitf.setFileDateTime(ndt);
+        nitf.setFileTitle("");
+
+        nitf.setFileSecurityMetadata(NitfFileSecurityMetadata.getDefaultMetadata(fileType));
+        RGBColour backgroundColour = new RGBColour(RGBColour.CODICE_LOGO_RED_COMPONENT,
+                RGBColour.CODICE_LOGO_GREEN_COMPONENT, RGBColour.CODICE_LOGO_BLUE_COMPONENT);
+        nitf.setFileBackgroundColour(backgroundColour);
+
+        nitf.setOriginatorsName("");
+        nitf.setOriginatorsPhoneNumber("");
+
+        // The rest of this is made up of things that already work OK as defaults.
+
+        return nitf;
+    }
+
+    private static NitfDateTime getNitfDateTimeForNow() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+
+        NitfDateTime ndt = new NitfDateTime();
+        ndt.set(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NITF21_DATE_FORMAT);
+        ndt.setSourceString(now.format(formatter));
+
+        return ndt;
+    }
+
 }

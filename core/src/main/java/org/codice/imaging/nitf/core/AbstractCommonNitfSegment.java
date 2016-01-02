@@ -35,8 +35,7 @@ public abstract class AbstractCommonNitfSegment extends AbstractNitfSegment {
     }
 
     /**
-        Return the identifier (IID1/SID/LID/TEXTID) for the segment.
-        <p>
+        Return the identifier (IID1/SID/LID/TEXTID/DESID) for the segment.        <p>
         This field shall contain a valid alphanumeric identification code associated with the
         segment. The valid codes are determined by the application.
 
