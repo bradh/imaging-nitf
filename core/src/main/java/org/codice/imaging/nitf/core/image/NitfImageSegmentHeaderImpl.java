@@ -17,14 +17,16 @@ package org.codice.imaging.nitf.core.image;
 import java.util.ArrayList;
 import java.util.List;
 import org.codice.imaging.nitf.core.AbstractNitfSubSegment;
+import org.codice.imaging.nitf.core.FileType;
 import org.codice.imaging.nitf.core.NitfDateTime;
+import org.codice.imaging.nitf.core.NitfSecurityMetadata;
 import org.codice.imaging.nitf.core.PixelJustification;
 import org.codice.imaging.nitf.core.PixelValueType;
 
 /**
     Image segment subheader information.
 */
-class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
+public class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
         implements NitfImageSegmentHeader {
 
     private NitfDateTime imageDateTime = null;
@@ -72,6 +74,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param dateTime the date time for the image.
     */
+    @Override
     public final void setImageDateTime(final NitfDateTime dateTime) {
         imageDateTime = dateTime;
     }
@@ -91,6 +94,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param targetId the target identifier
     */
+    @Override
     public final void setImageTargetId(final TargetId targetId) {
         imageTargetId = targetId;
     }
@@ -112,6 +116,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
          @param identifier the second image identifier for the image (80 character maximum)
     */
+    @Override
     public final void setImageIdentifier2(final String identifier) {
         imageIdentifier2 = identifier;
     }
@@ -134,6 +139,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param source image source (42 characters maximum)
     */
+    @Override
     public final void setImageSource(final String source) {
         imageSource = source;
     }
@@ -157,6 +163,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfRows the number of significant rows
     */
+    @Override
     public final void setNumberOfRows(final long numberOfRows) {
         numRows = numberOfRows;
     }
@@ -180,6 +187,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfColumns the number of significant columns
     */
+    @Override
     public final void setNumberOfColumns(final long numberOfColumns) {
         numColumns = numberOfColumns;
     }
@@ -211,6 +219,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param valueType the pixel value type
     */
+    @Override
     public final void setPixelValueType(final PixelValueType valueType) {
         pixelValueType = valueType;
     }
@@ -238,6 +247,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param representation the image representation to apply
     */
+    @Override
     public final void setImageRepresentation(final ImageRepresentation representation) {
         imageRepresentation = representation;
     }
@@ -269,6 +279,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param category the image category
     */
+    @Override
     public final void setImageCategory(final ImageCategory category) {
         imageCategory = category;
     }
@@ -295,6 +306,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param abpb number of actual bits-per-pixel per band
     */
+    @Override
     public final void setActualBitsPerPixelPerBand(final int abpb) {
         actualBitsPerPixelPerBand = abpb;
     }
@@ -316,6 +328,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param justification the justification of the significant bits
     */
+    @Override
     public final void setPixelJustification(final PixelJustification justification) {
         pixelJustification = justification;
     }
@@ -349,6 +362,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param representation the image coordinate representation
     */
+    @Override
     public final void setImageCoordinatesRepresentation(final ImageCoordinatesRepresentation representation) {
         imageCoordinatesRepresentation = representation;
     }
@@ -435,6 +449,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param compression the compression format used
     */
+    @Override
     public final void setImageCompression(final ImageCompression compression) {
         imageCompression = compression;
     }
@@ -513,6 +528,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param rate string representation of the compression rate
     */
+    @Override
     public final void setCompressionRate(final String rate) {
         compressionRate = rate;
     }
@@ -630,6 +646,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param mode the image mode
     */
+    @Override
     public final void setImageMode(final ImageMode mode) {
         imageMode = mode;
     }
@@ -653,6 +670,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfBlocksPerRow the number of blocks per row.
     */
+    @Override
     public final void setNumberOfBlocksPerRow(final int numberOfBlocksPerRow) {
         numBlocksPerRow = numberOfBlocksPerRow;
     }
@@ -676,6 +694,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfBlocksPerColumn the number of blocks per column.
     */
+    @Override
     public final void setNumberOfBlocksPerColumn(final int numberOfBlocksPerColumn) {
         numBlocksPerColumn = numberOfBlocksPerColumn;
     }
@@ -703,6 +722,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfPixelsPerBlockHorizontal the number of pixels per block, horizontal.
     */
+    @Override
     public final void setNumberOfPixelsPerBlockHorizontal(final int numberOfPixelsPerBlockHorizontal) {
         numPixelsPerBlockHorizontal = numberOfPixelsPerBlockHorizontal;
     }
@@ -730,6 +750,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfPixelsPerBlockVertical the number of pixels per block, vertical.
     */
+    @Override
     public final void setNumberOfPixelsPerBlockVertical(final int numberOfPixelsPerBlockVertical) {
         numPixelsPerBlockVertical = numberOfPixelsPerBlockVertical;
     }
@@ -761,6 +782,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param numberOfBitsPerPixelPerBand the number of bits per pixel per band.
     */
+    @Override
     public final void setNumberOfBitsPerPixelPerBand(final int numberOfBitsPerPixelPerBand) {
         numBitsPerPixelPerBand = numberOfBitsPerPixelPerBand;
     }
@@ -793,6 +815,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param displayLevel the display level (integer format).
     */
+    @Override
     public final void setImageDisplayLevel(final int displayLevel) {
         imageDisplayLevel = displayLevel;
     }
@@ -822,6 +845,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param locationRow the image location row number
     */
+    @Override
     public final void setImageLocationRow(final int locationRow) {
         imageLocationRow = locationRow;
     }
@@ -851,6 +875,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param locationColumn the image location column number
     */
+    @Override
     public final void setImageLocationColumn(final int locationColumn) {
         imageLocationColumn = locationColumn;
     }
@@ -884,6 +909,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param magnification the magnification level
     */
+    @Override
     public final void setImageMagnification(final String magnification) {
         imageMagnification = magnification;
     }
@@ -921,6 +947,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param coordinates the coordinates value.
     */
+    @Override
     public final void setImageCoordinates(final ImageCoordinates coordinates) {
         imageCoordinates = coordinates;
     }
@@ -941,6 +968,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param overflow the user defined header overflow index
     */
+    @Override
     public final void setUserDefinedHeaderOverflow(final int overflow) {
         imageUserDefinedHeaderOverflow = overflow;
     }
@@ -960,6 +988,7 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
 
         @param length the image data segment length, in bytes
     */
+    @Override
     public final void setImageSegmentDataLength(final long length) {
         imageSegmentDataLength = length;
     }
@@ -983,8 +1012,15 @@ class NitfImageSegmentHeaderImpl extends AbstractNitfSubSegment
         return numberOfBytesPerBlock;
     }
 
-    static NitfImageSegmentHeader getDefault(final FileType fileType) {
-        NitfImageSegmentHeader imageHeader = new NitfImageSegmentHeader();
+    /**
+     * Create a default-filled image segment subheader.
+     *
+     * @param fileType the type (version) of NITF file to create.
+     *
+     * @return default constructed header
+     */
+    public static NitfImageSegmentHeader getDefault(final FileType fileType) {
+        NitfImageSegmentHeader imageHeader = new NitfImageSegmentHeaderImpl();
         imageHeader.setImageDateTime(getNitfDateTimeForNow());
         imageHeader.setImageTargetId(TargetId.getDefault());
         imageHeader.setSecurityMetadata(NitfSecurityMetadata.getDefaultMetadata(fileType));

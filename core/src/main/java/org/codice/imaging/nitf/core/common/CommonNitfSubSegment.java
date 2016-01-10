@@ -41,4 +41,5 @@ public interface CommonNitfSubSegment extends CommonNitfSegment {
      @return the attachment level
      */
     int getAttachmentLevel();
+
 }

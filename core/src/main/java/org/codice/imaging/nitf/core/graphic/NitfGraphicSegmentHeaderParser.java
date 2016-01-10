@@ -35,6 +35,7 @@ import org.codice.imaging.nitf.core.NitfParseStrategy;
 import org.codice.imaging.nitf.core.NitfReader;
 import org.codice.imaging.nitf.core.NitfSecurityMetadata;
 import org.codice.imaging.nitf.core.TreCollection;
+import org.codice.imaging.nitf.core.TreSource;
 import org.codice.imaging.nitf.core.common.AbstractNitfSegmentParser;
 
 /**

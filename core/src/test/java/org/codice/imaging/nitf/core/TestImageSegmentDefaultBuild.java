@@ -16,8 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.io.File;
 import java.text.ParseException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeaderImpl;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -44,7 +44,7 @@ public class TestImageSegmentDefaultBuild {
 
         store.setNitfFileLevelHeader(nitf);
 
-        NitfImageSegmentHeader imageHeader = NitfImageSegmentHeader.getDefault(nitf.getFileType());
+        NitfImageSegmentHeader imageHeader = NitfImageSegmentHeaderImpl.getDefault(nitf.getFileType());
         store.getImageSegmentHeaders().add(imageHeader);
         store.getImageSegmentData().add(new byte[0]);
 

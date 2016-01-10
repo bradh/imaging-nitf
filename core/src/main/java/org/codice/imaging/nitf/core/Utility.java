@@ -19,7 +19,7 @@ package org.codice.imaging.nitf.core;
  *
  * This should not contain public API, and probably should not have internal state.
  */
-final class Utility {
+public final class Utility {
 
     private Utility() {
     }
@@ -30,7 +30,7 @@ final class Utility {
      * @param length the length of the string to create
      * @return the space-filled string
      */
-    protected static String spaceFillForLength(final int length) {
+    public static String spaceFillForLength(final int length) {
         return String.format("%1$-" + length + "s", "");
     }
 

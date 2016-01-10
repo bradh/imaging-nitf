@@ -18,6 +18,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

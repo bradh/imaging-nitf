@@ -30,9 +30,12 @@ import static org.codice.imaging.nitf.core.common.CoordinateConstants.MINUTES_IN
 import static org.codice.imaging.nitf.core.common.CoordinateConstants.MINUTES_LENGTH;
 import static org.codice.imaging.nitf.core.common.CoordinateConstants.SECONDS_IN_ONE_MINUTE;
 import static org.codice.imaging.nitf.core.common.CoordinateConstants.SECONDS_LENGTH;
+import static org.codice.imaging.nitf.core.image.ImageConstants.IGEOLO_LENGTH;
+import static org.codice.imaging.nitf.core.image.ImageConstants.NUM_PARTS_IN_IGEOLO;
+
 import java.text.ParseException;
 
-import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+import org.codice.imaging.nitf.core.Utility;
 
 /**
     A coordinate pair (latitude / longitude or equivalent).
@@ -214,7 +217,7 @@ public class ImageCoordinatePair {
 
     static ImageCoordinatePair getDefault() {
         ImageCoordinatePair icpair = new ImageCoordinatePair();
-        icpair.sourceString = spaceFillForLength(NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
+        icpair.sourceString = Utility.spaceFillForLength(IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
         return icpair;
     }
 

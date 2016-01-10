@@ -16,7 +16,9 @@ package org.codice.imaging.nitf.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.codice.imaging.nitf.core.common.dataextension.NitfDataExtensionSegmentHeader;
+import org.codice.imaging.nitf.core.dataextension.NitfDataExtensionSegmentHeader;
+import org.codice.imaging.nitf.core.graphic.NitfGraphicSegmentHeader;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 
 /**
  * A data structure collection that holds the various parts of a NITF file.

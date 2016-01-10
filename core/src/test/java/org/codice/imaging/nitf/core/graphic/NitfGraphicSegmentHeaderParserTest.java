@@ -31,6 +31,7 @@ import org.codice.imaging.nitf.core.NitfReader;
 import org.codice.imaging.nitf.core.NitfSecurityClassification;
 import org.codice.imaging.nitf.core.NitfSecurityMetadata;
 import org.codice.imaging.nitf.core.TreCollection;
+import org.codice.imaging.nitf.core.TreSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -118,7 +119,7 @@ public class NitfGraphicSegmentHeaderParserTest {
         when(nitfReader.readBytesAsInteger(any(Integer.class))).thenAnswer(a -> intValues.pop());
 
         strategy = mock(NitfParseStrategy.class);
-        when(strategy.parseTREs(any(NitfReader.class), any(Integer.class))).thenReturn(new TreCollection());
+        when(strategy.parseTREs(any(NitfReader.class), any(Integer.class), any(TreSource.class))).thenReturn(new TreCollection());
     }
 
     @Test

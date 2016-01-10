@@ -418,11 +418,75 @@ public final class NitfConstants {
     protected static final String SRES = "00";
 
     /**
-     * Number of coordinate parts in the "Image Geographic Location" field in the NITF image header.
-     *
-     * That is, each part is IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO long
+     * Length of the "Graphic Extended Subheader Data Length" field in the NITF Graphic Subheader.
+     * <p>
+     * See MIL-STD-2500C Table A-5.
      */
-    protected static final int NUM_PARTS_IN_IGEOLO = 4;
+    protected static final int SXSHDL_LENGTH = 5;
+
+    /**
+     * Length of the "Graphic Extended Subheader Data" field in the NITF Graphic Subheader.
+     * <p>
+     * See MIL-STD-2500C Table A-5.
+     */
+    protected static final int SXSOFL_LENGTH = 3;
+
+    // Symbol (Graphic) Segment
+    /**
+     * Length of the "Symbol Type" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int SYTYPE_LENGTH = 1;
+
+    /**
+     * Length of the "Number of Lines Per Symbol" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int NLIPS_LENGTH = 4;
+
+    /**
+     * Length of the "Number of Pixels Per Line" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int NPIXPL_LENGTH = 4;
+
+    /**
+     * Length of the "Line Width" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int NWDTH_LENGTH = 4;
+
+    /**
+     * Length of the "Number of Bits Per Pixel" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int SYNBPP_LENGTH = 1;
+
+    /**
+     * Length of the "Symbol Number" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int SNUM_LENGTH = 6;
+
+    /**
+     * Length of the "Symbol Rotation" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int SROT_LENGTH = 3;
+
+    /**
+     * Length of the "Number of LUT Entries" field in the NITF 2.0 symbol header.
+     * <p>
+     * See MIL-STD-2500A Table VI and VII.
+     */
+    protected static final int SYNELUT_LENGTH = 3;
 
     // label segment
     /**

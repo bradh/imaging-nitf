@@ -18,6 +18,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeaderImpl;
 
 /**
  * Builder for NITF files.
@@ -52,7 +54,7 @@ public class NitfBuilder {
      */
     public final void addImage(final File file) throws IOException {
         BufferedImage img = ImageIO.read(file);
-        NitfImageSegmentHeader imgHeader = NitfImageSegmentHeader.getDefault(store.getNitfHeader().getFileType());
+        NitfImageSegmentHeader imgHeader = NitfImageSegmentHeaderImpl.getDefault(store.getNitfHeader().getFileType());
         imgHeader.setNumberOfRows(img.getHeight());
         imgHeader.setNumberOfColumns(img.getWidth());
         // TODO: set other imgHeader parts.

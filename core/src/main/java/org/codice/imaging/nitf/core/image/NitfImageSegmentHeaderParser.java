@@ -23,6 +23,7 @@ import static org.codice.imaging.nitf.core.image.ImageConstants.ICORDS_LENGTH;
 import static org.codice.imaging.nitf.core.image.ImageConstants.IC_LENGTH;
 import static org.codice.imaging.nitf.core.image.ImageConstants.IDLVL_LENGTH;
 import static org.codice.imaging.nitf.core.image.ImageConstants.IGEOLO_LENGTH;
+import static org.codice.imaging.nitf.core.image.ImageConstants.NUM_PARTS_IN_IGEOLO;
 import static org.codice.imaging.nitf.core.image.ImageConstants.IID1_LENGTH;
 import static org.codice.imaging.nitf.core.image.ImageConstants.IID2_LENGTH;
 import static org.codice.imaging.nitf.core.image.ImageConstants.ILOC_HALF_LENGTH;
@@ -59,6 +60,7 @@ import org.codice.imaging.nitf.core.NitfSecurityMetadata;
 import org.codice.imaging.nitf.core.PixelJustification;
 import org.codice.imaging.nitf.core.PixelValueType;
 import org.codice.imaging.nitf.core.TreCollection;
+import org.codice.imaging.nitf.core.TreSource;
 import org.codice.imaging.nitf.core.common.AbstractNitfSegmentParser;
 
 /**
@@ -229,7 +231,7 @@ public class NitfImageSegmentHeaderParser extends AbstractNitfSegmentParser {
     private void readIGEOLO() throws ParseException {
         // TODO: this really only handle the GEO and D cases, not the UTM / UPS representations.
         final int numCoordinates = NUM_PARTS_IN_IGEOLO;
-        final int coordinatePairLength = IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO;
+        final int coordinatePairLength = IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO;
         String igeolo = reader.readBytes(IGEOLO_LENGTH);
 
         ImageCoordinatePair[] coords = new ImageCoordinatePair[numCoordinates];
@@ -332,8 +334,8 @@ public class NitfImageSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readUDID() throws ParseException {
-        TreCollection userDefinedSubheaderTres = parsingStrategy.parseTREs(reader, 
-                userDefinedImageDataLength - UDOFL_LENGTH, 
+        TreCollection userDefinedSubheaderTres = parsingStrategy.parseTREs(reader,
+                userDefinedImageDataLength - UDOFL_LENGTH,
                 TreSource.UserDefinedImageData);
         segment.mergeTREs(userDefinedSubheaderTres);
     }
