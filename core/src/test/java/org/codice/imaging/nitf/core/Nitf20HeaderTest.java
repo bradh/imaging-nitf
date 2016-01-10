@@ -14,18 +14,25 @@
  **/
 package org.codice.imaging.nitf.core;
 
-import java.io.BufferedInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+import org.codice.imaging.nitf.core.image.ImageCategory;
+import org.codice.imaging.nitf.core.image.ImageCompression;
+import org.codice.imaging.nitf.core.image.ImageCoordinatesRepresentation;
+import org.codice.imaging.nitf.core.image.ImageMode;
+import org.codice.imaging.nitf.core.image.ImageRepresentation;
+import org.codice.imaging.nitf.core.image.NitfImageBand;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 import org.junit.Before;
 import org.junit.Test;
 

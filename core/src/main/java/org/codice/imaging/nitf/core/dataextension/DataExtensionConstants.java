@@ -1,7 +1,7 @@
 package org.codice.imaging.nitf.core.dataextension;
 
 /**
- * Set of constants relating to Data Extension Segment.
+ * Shared data segment values.
  */
 public final class DataExtensionConstants {
 

@@ -18,8 +18,12 @@ import java.text.ParseException;
 
 import javax.xml.transform.Source;
 
-import org.codice.imaging.nitf.core.common.dataextension.NitfDataExtensionSegmentHeader;
+import org.codice.imaging.nitf.core.dataextension.NitfDataExtensionSegmentHeader;
+import org.codice.imaging.nitf.core.graphic.NitfGraphicSegmentHeader;
 import org.codice.imaging.nitf.core.dataextension.NitfDataExtensionSegmentHeaderParser;
+import org.codice.imaging.nitf.core.graphic.NitfGraphicSegmentHeaderParser;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeaderParser;
 
 /**
  * "Slotted" parse strategy.
