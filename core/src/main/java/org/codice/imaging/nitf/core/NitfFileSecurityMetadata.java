@@ -16,6 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
 
+import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+
 /**
     File security metadata.
     <p>

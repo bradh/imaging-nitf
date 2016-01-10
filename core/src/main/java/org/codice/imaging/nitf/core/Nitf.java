@@ -14,12 +14,8 @@
  */
 package org.codice.imaging.nitf.core;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import static org.codice.imaging.nitf.core.NitfConstants.NITF21_DATE_FORMAT;
 
 /**
     NITF file data.
@@ -479,15 +475,5 @@ public class Nitf extends AbstractNitfSegment {
         return nitf;
     }
 
-    private static NitfDateTime getNitfDateTimeForNow() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-
-        NitfDateTime ndt = new NitfDateTime();
-        ndt.set(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NITF21_DATE_FORMAT);
-        ndt.setSourceString(now.format(formatter));
-
-        return ndt;
-    }
 
 }

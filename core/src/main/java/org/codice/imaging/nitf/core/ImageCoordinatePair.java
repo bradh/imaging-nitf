@@ -16,6 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
 
+import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+
 /**
     A coordinate pair (latitude / longitude or equivalent).
 */
@@ -193,4 +195,11 @@ public class ImageCoordinatePair {
     final void setFromMGRS(final String mgrs) {
         sourceString = mgrs;
     }
+
+    static ImageCoordinatePair getDefault() {
+        ImageCoordinatePair icpair = new ImageCoordinatePair();
+        icpair.sourceString = spaceFillForLength(NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
+        return icpair;
+    }
+
 }

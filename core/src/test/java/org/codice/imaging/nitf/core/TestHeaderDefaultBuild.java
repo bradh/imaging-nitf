@@ -15,7 +15,6 @@
 package org.codice.imaging.nitf.core;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

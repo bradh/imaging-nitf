@@ -27,7 +27,6 @@ public abstract class SharedNitfWriter implements NitfWriter {
 
     private static final int BASIC_HEADER_LENGTH = 388;
     private static final String DOWNGRADE_EVENT_MAGIC = "999998";
-    private static final int NUM_PARTS_IN_IGEOLO = 4;
     private static final String STREAMING_FILE_HEADER = "STREAMING_FILE_HEADER";
     private static final int MAX_NUM_BANDS_IN_NBANDS_FIELD = 9;
 
@@ -352,13 +351,13 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(header.getImageCoordinatesRepresentation().getTextEquivalent(fileType), NitfConstants.ICORDS_LENGTH);
         if (header.getImageCoordinatesRepresentation() != ImageCoordinatesRepresentation.NONE) {
             writeFixedLengthString(header.getImageCoordinates().getCoordinate00().getSourceFormat(),
-                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+                    NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
             writeFixedLengthString(header.getImageCoordinates().getCoordinate0MaxCol().getSourceFormat(),
-                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+                    NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
             writeFixedLengthString(header.getImageCoordinates().getCoordinateMaxRowMaxCol().getSourceFormat(),
-                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+                    NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
             writeFixedLengthString(header.getImageCoordinates().getCoordinateMaxRow0().getSourceFormat(),
-                    NitfConstants.IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO);
+                    NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO);
         }
         writeFixedLengthNumber(header.getImageComments().size(), NitfConstants.NICOM_LENGTH);
         for (String comment : header.getImageComments()) {

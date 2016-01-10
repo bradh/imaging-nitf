@@ -811,6 +811,13 @@ public final class NitfConstants {
     protected static final int IGEOLO_LENGTH = 60;
 
     /**
+     * Number of coordinate parts in the "Image Geographic Location" field in the NITF image header.
+     *
+     * That is, each part is IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO long
+     */
+    protected static final int NUM_PARTS_IN_IGEOLO = 4;
+
+    /**
      * Length of the "Number of Image Comments" field in the NITF image header.
      * <p>
      * See MIL-STD-2500C Table A-3.

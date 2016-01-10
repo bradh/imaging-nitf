@@ -16,6 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
 
+import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+
 /**
     Security metadata for a NITF file header or segment subheader.
 */
@@ -740,16 +742,6 @@ public class NitfSecurityMetadata {
             meta.setDowngradeDateOrSpecialCase(spaceFillForLength(NitfConstants.XSDWNG20_LENGTH));
             // Do not need Security Downgrade here - its conditional on the previous field being "999998"
         }
-    }
-
-    /**
-     * Create an empty (space-filled) string of specified length.
-     *
-     * @param length the length of the string to create
-     * @return the space-filled string
-     */
-    protected static String spaceFillForLength(final int length) {
-        return String.format("%1$-" + length + "s", "");
     }
 };
 

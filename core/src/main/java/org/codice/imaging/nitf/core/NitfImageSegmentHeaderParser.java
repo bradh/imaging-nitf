@@ -182,8 +182,8 @@ class NitfImageSegmentHeaderParser extends AbstractNitfSegmentParser {
 
     private void readIGEOLO() throws ParseException {
         // TODO: this really only handle the GEO and D cases, not the UTM / UPS representations.
-        final int numCoordinates = 4;
-        final int coordinatePairLength = NitfConstants.IGEOLO_LENGTH / numCoordinates;
+        final int numCoordinates = NitfConstants.NUM_PARTS_IN_IGEOLO;
+        final int coordinatePairLength = NitfConstants.IGEOLO_LENGTH / NitfConstants.NUM_PARTS_IN_IGEOLO;
         String igeolo = reader.readBytes(NitfConstants.IGEOLO_LENGTH);
         ImageCoordinatePair[] coords = new ImageCoordinatePair[numCoordinates];
         for (int i = 0; i < numCoordinates; ++i) {
