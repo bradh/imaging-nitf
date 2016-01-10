@@ -462,6 +462,7 @@ public class Nitf extends AbstractNitfSegment {
         return this.fileSecurityMetadata;
     }
 
+    /**
      * Create a default NITF file header.
      *
      * @param fileType the type (version) of NITF file to create

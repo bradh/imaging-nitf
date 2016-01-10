@@ -15,8 +15,6 @@
 package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.transform.Source;
 

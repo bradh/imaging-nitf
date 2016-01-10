@@ -15,6 +15,7 @@
 package org.codice.imaging.nitf.core;
 
 import java.util.List;
+import org.codice.imaging.nitf.core.common.dataextension.NitfDataExtensionSegmentHeader;
 
 /**
  * Data source for NITF file parts.

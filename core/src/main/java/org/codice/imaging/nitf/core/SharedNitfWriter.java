@@ -19,6 +19,16 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import org.codice.imaging.nitf.core.common.CommonConstants;
+import org.codice.imaging.nitf.core.common.CommonNitfSegment;
+import org.codice.imaging.nitf.core.common.dataextension.NitfDataExtensionSegmentHeader;
+
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DE;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESID_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESITEM_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESOFLW_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESSHL_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESVER_LENGTH;
 
 /**
  * Output independent parts of a NitfWriter implementation.
@@ -62,15 +72,15 @@ public abstract class SharedNitfWriter implements NitfWriter {
     }
 
     private void writeDESHeader(final NitfDataExtensionSegmentHeader header, final FileType fileType) throws IOException, ParseException {
-        writeFixedLengthString(NitfConstants.DE, NitfConstants.DE.length());
-        writeFixedLengthString(header.getIdentifier(), NitfConstants.DESID_LENGTH);
-        writeFixedLengthNumber(header.getDESVersion(), NitfConstants.DESVER_LENGTH);
+        writeFixedLengthString(DE, DE.length());
+        writeFixedLengthString(header.getIdentifier(), DESID_LENGTH);
+        writeFixedLengthNumber(header.getDESVersion(), DESVER_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), fileType);
         if (header.isTreOverflow(fileType)) {
-            writeFixedLengthString(header.getOverflowedHeaderType(), NitfConstants.DESOFLW_LENGTH);
-            writeFixedLengthNumber(header.getItemOverflowed(), NitfConstants.DESITEM_LENGTH);
+            writeFixedLengthString(header.getOverflowedHeaderType(), DESOFLW_LENGTH);
+            writeFixedLengthNumber(header.getItemOverflowed(), DESITEM_LENGTH);
         }
-        writeFixedLengthNumber(header.getUserDefinedSubheaderField().length(), NitfConstants.DESSHL_LENGTH);
+        writeFixedLengthNumber(header.getUserDefinedSubheaderField().length(), DESSHL_LENGTH);
         if (header.getUserDefinedSubheaderField().length() > 0) {
             mOutput.writeBytes(header.getUserDefinedSubheaderField());
         } else {
@@ -156,7 +166,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         mOutput.writeBytes(header.getFileDateTime().getSourceString());
         writeFixedLengthString(header.getFileTitle(), NitfConstants.FTITLE_LENGTH);
         writeFileSecurityMetadata(header.getFileSecurityMetadata(), header.getFileType());
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         if ((header.getFileType() == FileType.NITF_TWO_ONE) || (header.getFileType() == FileType.NSIF_ONE_ZERO)) {
             mOutput.writeByte(header.getFileBackgroundColour().getRed());
             mOutput.writeByte(header.getFileBackgroundColour().getGreen());
@@ -301,7 +311,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(header.getIdentifier(), NitfConstants.SID_LENGTH);
         writeFixedLengthString(header.getGraphicName(), NitfConstants.SNAME_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ONE);
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         writeFixedLengthString(NitfConstants.SFMT_CGM, NitfConstants.SFMT_CGM.length());
         writeFixedLengthString(NitfConstants.SSTRUCT, NitfConstants.SSTRUCT.length());
         writeFixedLengthNumber(header.getGraphicDisplayLevel(), NitfConstants.SDLVL_LENGTH);
@@ -335,11 +345,11 @@ public abstract class SharedNitfWriter implements NitfWriter {
     private void writeImageHeader(final NitfImageSegmentHeader header, final FileType fileType) throws IOException, ParseException {
         writeFixedLengthString(NitfConstants.IM, NitfConstants.IM.length());
         writeFixedLengthString(header.getIdentifier(), NitfConstants.IID1_LENGTH);
-        writeFixedLengthString(header.getImageDateTime().getSourceString(), NitfConstants.STANDARD_DATE_TIME_LENGTH);
+        writeFixedLengthString(header.getImageDateTime().getSourceString(), CommonConstants.STANDARD_DATE_TIME_LENGTH);
         writeFixedLengthString(header.getImageTargetId().toString(), NitfConstants.TGTID_LENGTH);
         writeFixedLengthString(header.getImageIdentifier2(), NitfConstants.IID2_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), fileType);
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         writeFixedLengthString(header.getImageSource(), NitfConstants.ISORCE_LENGTH);
         writeFixedLengthNumber(header.getNumberOfRows(), NitfConstants.NROWS_LENGTH);
         writeFixedLengthNumber(header.getNumberOfColumns(), NitfConstants.NCOLS_LENGTH);
@@ -433,7 +443,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(NitfConstants.LA, NitfConstants.LA.length());
         writeFixedLengthString(header.getIdentifier(), NitfConstants.LID_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ZERO);
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         writeFixedLengthString(" ", NitfConstants.LFS_LENGTH);
         writeFixedLengthNumber(header.getLabelCellWidth(), NitfConstants.LCW_LENGTH);
         writeFixedLengthNumber(header.getLabelCellHeight(), NitfConstants.LCH_LENGTH);
@@ -504,7 +514,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         writeFixedLengthString(header.getIdentifier(), NitfConstants.SID_LENGTH);
         writeFixedLengthString(header.getSymbolName(), NitfConstants.SNAME_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), FileType.NITF_TWO_ZERO);
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         writeFixedLengthString(header.getSymbolType().getTextEquivalent(), NitfConstants.SYTYPE_LENGTH);
         writeFixedLengthNumber(header.getNumberOfLinesPerSymbol(), NitfConstants.NLIPS_LENGTH);
         writeFixedLengthNumber(header.getNumberOfPixelsPerLine(), NitfConstants.NPIXPL_LENGTH);
@@ -545,10 +555,10 @@ public abstract class SharedNitfWriter implements NitfWriter {
             writeFixedLengthString(header.getIdentifier(), NitfConstants.TEXTID_LENGTH);
             writeFixedLengthNumber(header.getAttachmentLevel(), NitfConstants.TXTALVL_LENGTH);
         }
-        writeFixedLengthString(header.getTextDateTime().getSourceString(), NitfConstants.STANDARD_DATE_TIME_LENGTH);
+        writeFixedLengthString(header.getTextDateTime().getSourceString(), CommonConstants.STANDARD_DATE_TIME_LENGTH);
         writeFixedLengthString(header.getTextTitle(), NitfConstants.TXTITL_LENGTH);
         writeSecurityMetadata(header.getSecurityMetadata(), fileType);
-        writeFixedLengthString("0", NitfConstants.ENCRYP_LENGTH);
+        writeFixedLengthString("0", CommonConstants.ENCRYP_LENGTH);
         writeFixedLengthString(header.getTextFormat().getTextEquivalent(), NitfConstants.TXTFMT_LENGTH);
         byte[] textExtendedSubheaderData = getTREs(header, TreSource.TextExtendedSubheaderData);
         int textExtendedSubheaderDataLength = textExtendedSubheaderData.length;
@@ -562,7 +572,7 @@ public abstract class SharedNitfWriter implements NitfWriter {
         }
     }
 
-    private byte[] getTREs(final AbstractNitfSegment header, final TreSource source) throws ParseException, IOException {
+    private byte[] getTREs(final CommonNitfSegment header, final TreSource source) throws ParseException, IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (Tre tre : header.getTREsRawStructure().getTREsForSource(source)) {
             String name = padStringToLength(tre.getName(), NitfConstants.TAG_LENGTH);

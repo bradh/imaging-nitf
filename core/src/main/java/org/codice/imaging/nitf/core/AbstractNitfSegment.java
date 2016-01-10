@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.codice.imaging.nitf.core.common.CommonNitfSegment;
+import org.codice.imaging.nitf.core.common.CommonConstants;
 
 /**
     Common data elements for NITF segment subheaders and file header.
@@ -40,7 +41,7 @@ public abstract class AbstractNitfSegment implements CommonNitfSegment {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         NitfDateTime ndt = new NitfDateTime();
         ndt.set(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NitfConstants.NITF21_DATE_FORMAT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CommonConstants.NITF21_DATE_FORMAT);
         ndt.setSourceString(now.format(formatter));
         return ndt;
     }

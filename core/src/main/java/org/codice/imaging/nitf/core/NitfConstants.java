@@ -1249,14 +1249,14 @@ public final class NitfConstants {
      * <p>
      * See MIL-STD-2500C Table A-7.
      */
-    protected static final int TAG_LENGTH = 6;
+    public static final int TAG_LENGTH = 6;
 
     /**
      * Length of the "Length of REDATA Field" field in the Registered and controlled TRE format.
      * <p>
      * See MIL-STD-2500C Table A-7.
      */
-    protected static final int TAGLEN_LENGTH = 5;
+    public static final int TAGLEN_LENGTH = 5;
 
     static final String AND_CONDITION = " AND ";
     static final String UNSUPPORTED_IFTYPE_FORMAT_MESSAGE = "Unsupported format for iftype:";
