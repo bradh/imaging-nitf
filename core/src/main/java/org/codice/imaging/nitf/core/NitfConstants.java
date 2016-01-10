@@ -21,7 +21,9 @@ public final class NitfConstants {
     static final String GENERIC_READ_ERROR_MESSAGE = "Error reading from NITF file: ";
     static final String FILE_NOT_FOUND_EXCEPTION_MESSAGE = "File Not Found Exception opening file:";
     static final String NOT_FOUND_MESSAGE_JOINER = " not found: ";
+
     static final String READ_MODE = "r";
+    static final String WRITE_MODE = "rw";
 
     // Coordinate
     /**
@@ -713,6 +715,13 @@ public final class NitfConstants {
      * See MIL-STD-2500C Table A-3.
      */
     protected static final int IGEOLO_LENGTH = 60;
+
+    /**
+     * Number of coordinate parts in the "Image Geographic Location" field in the NITF image header.
+     *
+     * That is, each part is IGEOLO_LENGTH / NUM_PARTS_IN_IGEOLO long
+     */
+    protected static final int NUM_PARTS_IN_IGEOLO = 4;
 
     /**
      * Length of the "Number of Image Comments" field in the NITF image header.

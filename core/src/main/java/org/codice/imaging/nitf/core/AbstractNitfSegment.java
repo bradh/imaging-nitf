@@ -14,6 +14,9 @@
  **/
 package org.codice.imaging.nitf.core;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,6 +27,23 @@ import org.codice.imaging.nitf.core.common.CommonNitfSegment;
     Common data elements for NITF segment subheaders and file header.
 */
 public abstract class AbstractNitfSegment implements CommonNitfSegment {
+
+    /**
+     * Get a NitfDateTime that corresponds to the current time.
+     *
+     * This sets up the source string as well as the individual parameters. Note that NITF dates and times are always in
+     * UTC (GMT, Zulu).
+     *
+     * @return valid NitfDateTime corresponding to the time of the call.
+     */
+    protected static NitfDateTime getNitfDateTimeForNow() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        NitfDateTime ndt = new NitfDateTime();
+        ndt.set(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(NitfConstants.NITF21_DATE_FORMAT);
+        ndt.setSourceString(now.format(formatter));
+        return ndt;
+    }
 
     private final TreCollection treCollection = new TreCollection();
 

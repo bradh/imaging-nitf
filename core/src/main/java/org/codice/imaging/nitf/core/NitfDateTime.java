@@ -14,6 +14,8 @@
  */
 package org.codice.imaging.nitf.core;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -89,6 +91,17 @@ public class NitfDateTime {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.set(mYear, mMonth - 1, mDay, mHour, mMinute, mSecond);
         return calendar.getTime();
+    }
+
+    /**
+     * Return the value of this object as a ZonedDateTime (in UTC).
+     *
+     * This is a best effort conversion, based on the information available, which can be incomplete.
+     *
+     * @return the value of this object as a ZonedDateTime
+     */
+    public final ZonedDateTime toZonedDateTime() {
+        return ZonedDateTime.of(mYear, mMonth, mDay, mHour, mMinute, mSecond, 0, ZoneId.of("UTC"));
     }
 
 }

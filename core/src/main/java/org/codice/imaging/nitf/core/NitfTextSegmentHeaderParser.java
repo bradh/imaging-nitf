@@ -98,7 +98,9 @@ class NitfTextSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readTXSHD() throws ParseException {
-        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader, textExtendedSubheaderLength - NitfConstants.TXSOFL_LENGTH);
+        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader,
+                textExtendedSubheaderLength - NitfConstants.TXSOFL_LENGTH,
+                TreSource.TextExtendedSubheaderData);
         segment.mergeTREs(extendedSubheaderTREs);
     }
 }

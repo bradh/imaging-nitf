@@ -40,6 +40,8 @@ public abstract class AbstractNitfSegmentParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNitfSegmentParser.class);
 
+    private static final int NITF20_DATE_FORMAT_ZULU_MARKER_INDEX = 8;
+
     /**
      *
      * the NitfReader which streams the input.
@@ -121,7 +123,18 @@ public abstract class AbstractNitfSegmentParser {
         } else if ((strippedSourceString.length() < STANDARD_DATE_TIME_LENGTH) && (strippedSourceString.length() % 2 == 0)) {
             dateFormat = new SimpleDateFormat(NITF21_DATE_FORMAT.substring(0, strippedSourceString.length()));
         }
-        parseDateString(sourceString, dateFormat, dateTime);
+        try {
+            parseDateString(sourceString, dateFormat, dateTime);
+        } catch (java.text.ParseException ex) {
+            if (((sourceString.charAt(NITF20_DATE_FORMAT_ZULU_MARKER_INDEX) == 'Z')
+                    || (sourceString.charAt(NITF20_DATE_FORMAT_ZULU_MARKER_INDEX) == 'z'))
+                    && (Character.isLetter(sourceString.charAt(NITF20_DATE_FORMAT_ZULU_MARKER_INDEX + 1)))) {
+                // This is probably a NITF 2.0 date, included incorrectly
+                parseNitf20Date(sourceString, dateTime);
+            } else {
+                throw ex;
+            }
+        }
     }
 
     private static String removeHyphens(final String s) {

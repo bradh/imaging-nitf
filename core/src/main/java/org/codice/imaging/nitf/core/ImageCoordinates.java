@@ -29,6 +29,9 @@ public class ImageCoordinates {
     private static final int COORDINATEMAXROWMAXCOL_INDEX = 2;
     private static final int COORDINATEMAXROW0_INDEX = 3;
 
+    private ImageCoordinates() {
+    }
+
     /**
         Constructor.
 
@@ -75,5 +78,14 @@ public class ImageCoordinates {
     */
     public final ImageCoordinatePair getCoordinateMaxRow0() {
         return coordinateMaxRow0;
+    }
+
+    static ImageCoordinates getDefault() {
+        ImageCoordinates coordinates = new ImageCoordinates();
+        coordinates.coordinate00 = ImageCoordinatePair.getDefault();
+        coordinates.coordinate0MaxCol = ImageCoordinatePair.getDefault();
+        coordinates.coordinateMaxRow0 = ImageCoordinatePair.getDefault();
+        coordinates.coordinateMaxRowMaxCol = ImageCoordinatePair.getDefault();
+        return coordinates;
     }
 }

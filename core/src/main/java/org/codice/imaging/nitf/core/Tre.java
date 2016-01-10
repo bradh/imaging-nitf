@@ -20,14 +20,17 @@ package org.codice.imaging.nitf.core;
 public class Tre extends TreEntryList {
     private String prefix = null;
     private byte[] rawData = null;
+    private TreSource mSource;
 
     /**
-        Construct TRE with specific tag name.
-
-        @param tag the name for the TRE.
-    */
-    public Tre(final String tag) {
+     * Construct TRE with specific tag name.
+     *
+     * @param tag the name for the TRE.
+     * @param source the TreSource associated with this TRE
+     */
+    public Tre(final String tag, final TreSource source) {
         super(tag);
+        mSource = source;
     }
 
     /**
@@ -68,6 +71,18 @@ public class Tre extends TreEntryList {
     */
     public final byte[] getRawData() {
         return rawData;
+    }
+
+    /**
+     * The source for this TRE.
+     *
+     * In this context, the source is the segment header / subheader that the TRE was read from, or where it should be
+     * written to.
+     *
+     * @return source for the TRE.
+     */
+    public final TreSource getSource() {
+        return mSource;
     }
 
 }

@@ -16,6 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
 
+import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+
 /**
     A Target ID (TGTID) representation.
     <p>
@@ -120,6 +122,19 @@ public class TargetId {
     */
     public final String getCountryCode() {
         return countryCode;
+    }
+
+    /**
+     * Create a default (space filled) TargetId.
+     *
+     * @return the constructed TargetId
+     */
+    public static final TargetId getDefault() {
+        TargetId tgtId = new TargetId();
+        tgtId.setBasicEncyclopediaNumber(spaceFillForLength(BE_LENGTH));
+        tgtId.setOSuffix(spaceFillForLength(OSUFFIX_LENGTH));
+        tgtId.setCountryCode(spaceFillForLength(COUNTRYCODE_LENGTH));
+        return tgtId;
     }
 
     @Override

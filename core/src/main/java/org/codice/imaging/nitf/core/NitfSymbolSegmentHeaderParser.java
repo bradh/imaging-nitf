@@ -143,7 +143,9 @@ class NitfSymbolSegmentHeaderParser extends AbstractNitfSegmentParser {
     }
 
     private void readSXSHD() throws ParseException {
-        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader, symbolExtendedSubheaderLength - NitfConstants.SXSOFL_LENGTH);
+        TreCollection extendedSubheaderTREs = parsingStrategy.parseTREs(reader,
+                symbolExtendedSubheaderLength - NitfConstants.SXSOFL_LENGTH,
+                TreSource.SymbolExtendedSubheaderData);
         segment.mergeTREs(extendedSubheaderTREs);
     }
 }

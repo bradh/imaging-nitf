@@ -1352,4 +1352,13 @@ public class NitfImageSegmentHeader extends AbstractNitfSubSegment {
         long numberOfBytesPerBlock = numberOfPixelsPerBlock * getNumberOfBitsPerPixelPerBand() / BITS_PER_BYTE;
         return numberOfBytesPerBlock;
     }
+
+    static NitfImageSegmentHeader getDefault(final FileType fileType) {
+        NitfImageSegmentHeader imageHeader = new NitfImageSegmentHeader();
+        imageHeader.setImageDateTime(getNitfDateTimeForNow());
+        imageHeader.setImageTargetId(TargetId.getDefault());
+        imageHeader.setSecurityMetadata(NitfSecurityMetadata.getDefaultMetadata(fileType));
+        imageHeader.setImageCoordinates(ImageCoordinates.getDefault());
+        return imageHeader;
+    }
 }

@@ -16,6 +16,8 @@ package org.codice.imaging.nitf.core;
 
 import java.text.ParseException;
 
+import static org.codice.imaging.nitf.core.Utility.spaceFillForLength;
+
 /**
     Security metadata for a NITF file header or segment subheader.
 */
@@ -686,6 +688,60 @@ public class NitfSecurityMetadata {
     */
     public final String getSecurityControlNumber() {
         return nitfSecurityControlNumber;
+    }
+
+    /**
+     * Create default security metadata structure.
+     *
+     * This is intended for making base (default) level security metadata, and some changes will probably be required
+     * depending on application needs. In particular, you probably need to set the security classification system to
+     * reflect your national needs if you care about these fields.
+     *
+     * @param fileType the type of NITF file to generate security metadata for
+     * @return defaulted metadata structure
+     */
+    public static NitfSecurityMetadata getDefaultMetadata(final FileType fileType) {
+        NitfSecurityMetadata meta = new NitfSecurityMetadata();
+        fillDefaultMetadata(meta, fileType);
+
+        return meta;
+    }
+
+    /**
+     * Fill in default security metadata.
+     *
+     * This is really only intended for the file security subclass - you can ignore it.
+     *
+     * @param meta the metadata structure to fill in.
+     * @param fileType the type (version) of NITF file we are creating.
+     */
+    protected static void fillDefaultMetadata(final NitfSecurityMetadata meta, final FileType fileType) {
+        meta.setSecurityClassification(NitfSecurityClassification.UNCLASSIFIED);
+        meta.setSecurityClassificationSystem(spaceFillForLength(NitfConstants.XSCLSY_LENGTH));
+        if (fileType.equals(FileType.NITF_TWO_ONE) || fileType.equals(FileType.NSIF_ONE_ZERO)) {
+            meta.setCodewords(spaceFillForLength(NitfConstants.XSCODE_LENGTH));
+            meta.setControlAndHandling(spaceFillForLength(NitfConstants.XSCTLH_LENGTH));
+            meta.setReleaseInstructions(spaceFillForLength(NitfConstants.XSREL_LENGTH));
+            meta.setDeclassificationType(spaceFillForLength(NitfConstants.XSDCTP_LENGTH));
+            meta.setDeclassificationDate(spaceFillForLength(NitfConstants.XSDCDT_LENGTH));
+            meta.setDeclassificationExemption(spaceFillForLength(NitfConstants.XSDCXM_LENGTH));
+            meta.setDowngrade(spaceFillForLength(NitfConstants.XSDG_LENGTH));
+            meta.setDowngradeDate(spaceFillForLength(NitfConstants.XSDGDT_LENGTH));
+            meta.setClassificationText(spaceFillForLength(NitfConstants.XSCLTX_LENGTH));
+            meta.setClassificationAuthorityType(spaceFillForLength(NitfConstants.XSCATP_LENGTH));
+            meta.setClassificationAuthority(spaceFillForLength(NitfConstants.XSCAUT_LENGTH));
+            meta.setClassificationReason(spaceFillForLength(NitfConstants.XSCRSN_LENGTH));
+            meta.setSecuritySourceDate(spaceFillForLength(NitfConstants.XSSRDT_LENGTH));
+            meta.setSecurityControlNumber(spaceFillForLength(NitfConstants.XSCTLN_LENGTH));
+        } else if (fileType.equals(FileType.NITF_TWO_ZERO)) {
+            meta.setCodewords(spaceFillForLength(NitfConstants.XSCODE20_LENGTH));
+            meta.setControlAndHandling(spaceFillForLength(NitfConstants.XSCTLH20_LENGTH));
+            meta.setReleaseInstructions(spaceFillForLength(NitfConstants.XSREL20_LENGTH));
+            meta.setClassificationAuthority(spaceFillForLength(NitfConstants.XSCAUT20_LENGTH));
+            meta.setSecurityControlNumber(spaceFillForLength(NitfConstants.XSCTLN20_LENGTH));
+            meta.setDowngradeDateOrSpecialCase(spaceFillForLength(NitfConstants.XSDWNG20_LENGTH));
+            // Do not need Security Downgrade here - its conditional on the previous field being "999998"
+        }
     }
 };
 

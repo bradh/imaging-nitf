@@ -29,13 +29,6 @@ public interface NitfParseStrategy {
     void setFileHeader(Nitf nitf);
 
     /**
-     * Return the file-level header for the parsed file.
-     *
-     * @return the file-level header
-     */
-    Nitf getNitfHeader();
-
-    /**
      * Indication that the "base" file-level headers have been read.
      *
      * @param reader the reader, positioned for reading of the segments
@@ -47,9 +40,11 @@ public interface NitfParseStrategy {
      *
      * @param reader the reader to read the TRE data from
      * @param length the length of the TRE data (for all TREs)
+     * @param source the source segment part for the TRE (where it is being read
+     * from)
      * @return TRE collection for this header part
      * @throws java.text.ParseException if there is a problem loading the TRE descriptions, or in parsing TREs.
      */
-    TreCollection parseTREs(NitfReader reader, int length) throws ParseException;
+    TreCollection parseTREs(NitfReader reader, int length, TreSource source) throws ParseException;
 
 }
