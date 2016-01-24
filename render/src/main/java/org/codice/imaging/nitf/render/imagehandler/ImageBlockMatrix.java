@@ -20,16 +20,7 @@ class ImageBlockMatrix {
         int blockSize = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal()
                 * imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
 
-        int dataType = DataBuffer.TYPE_UNDEFINED;
-        switch (imageSegmentHeader.getImageRepresentation()) {
-            case RGBTRUECOLOUR:
-            case MULTIBAND:
-                dataType = DataBuffer.TYPE_INT;
-                break;
-            default:
-                throw new UnsupportedOperationException("No support for "
-                        + imageSegmentHeader.getImageRepresentation().getTextEquivalent());
-        }
+        int dataType = getDataTypeForMatrix(imageSegmentHeader);
 
         blocks = new ImageBlock[rowCount][columnCount];
 
@@ -38,6 +29,26 @@ class ImageBlockMatrix {
                 blocks[i][j] = new ImageBlock(dataType, i, j, blockSize);
             }
         }
+    }
+
+    private int getDataTypeForMatrix(NitfImageSegmentHeader imageSegmentHeader) throws UnsupportedOperationException {
+        int dataType = DataBuffer.TYPE_UNDEFINED;
+        // TODO: these need to be conditioned on imageSegmentHeader.getNumberOfBitsPerPixelPerBand()
+        // Right now it is 8 bit only.
+        switch (imageSegmentHeader.getImageRepresentation()) {
+            case RGBTRUECOLOUR:
+            case MULTIBAND:
+                dataType = DataBuffer.TYPE_INT;
+                break;
+            case RGBLUT:
+            case MONOCHROME:
+                dataType = DataBuffer.TYPE_BYTE;
+                break;
+            default:
+                throw new UnsupportedOperationException("No support for "
+                        + imageSegmentHeader.getImageRepresentation().getTextEquivalent());
+        }
+        return dataType;
     }
 
     /**

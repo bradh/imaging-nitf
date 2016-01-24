@@ -1,14 +1,15 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
 import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 
 /**
  * An ImageBlock represents a single block of a larger image.
  */
 class ImageBlock {
-    private int row;
-    private int column;
+    private final int row;
+    private final int column;
     private DataBuffer data;
 
     /**
@@ -28,6 +29,9 @@ class ImageBlock {
         switch (dataType) {
             case DataBuffer.TYPE_INT:
                 data = new DataBufferInt(blockSize);
+                break;
+            case DataBuffer.TYPE_BYTE:
+                data = new DataBufferByte(blockSize);
                 break;
             default:
                 throw new UnsupportedOperationException("No support for type: " + dataType);

@@ -53,8 +53,8 @@ public class BlockInterleaveImageModeHandler extends SharedImageModeHandler impl
 
         try {
             for (int bandIndex = 0; bandIndex < imageSegmentHeader.getNumBands(); ++bandIndex) {
-                for (int row = 0; row < blockWidth; row++) {
-                    for (int column = 0; column < blockHeight; column++) {
+                for (int row = 0; row < blockHeight; row++) {
+                    for (int column = 0; column < blockWidth; column++) {
                         int i = row * blockWidth + column;
                         int bandValue = imageInputStream.read();
                         data.setElem(i, imageRepresentationHandler.renderPixel(imageSegmentHeader, data.getElem(i), bandValue, bandIndex));

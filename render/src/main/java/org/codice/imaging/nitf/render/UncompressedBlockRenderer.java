@@ -16,7 +16,6 @@
 package org.codice.imaging.nitf.render;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -83,8 +82,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
         switch (mImageSegmentHeader.getNumberOfBitsPerPixelPerBand()) {
             case 1:
                 return getNextImageBlockMono1();
-            case 8:
-                return getNextImageBlockMono8();
             case 16:
                 return getNextImageBlockMono16();
             default:
@@ -105,8 +102,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
         switch (mImageSegmentHeader.getNumberOfBitsPerPixelPerBand()) {
             case 1:
                 return getNextImageBlockRGBLUT1();
-            case 8:
-                return getNextImageBlockRGBLUT8();
             default:
                 System.out.println("Unhandled RGBLUT bit depth:" + mImageSegmentHeader.getNumberOfBitsPerPixelPerBand());
                 return null;
@@ -141,29 +136,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
                 raster.setSample(columnIndex, rowIndex, 0, (int)mImageData.readBits(1));
             }
         }
-    }
-
-    private BufferedImage getNextImageBlockRGBLUT8() throws IOException {
-        IndexColorModel colourModel = new IndexColorModel(mImageSegmentHeader.getActualBitsPerPixelPerBand(),
-                                                          mImageSegmentHeader.getImageBandZeroBase(0).getNumLUTEntries(),
-                                                          mImageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(0).getEntries(),
-                                                          mImageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(1).getEntries(),
-                                                          mImageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(2).getEntries());
-        BufferedImage img = new BufferedImage(mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
-                                              mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
-                                              BufferedImage.TYPE_BYTE_INDEXED, colourModel);
-        byte[] imgData = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
-        mImageData.readFully(imgData);
-        return img;
-    }
-
-    private BufferedImage getNextImageBlockMono8() throws IOException {
-        BufferedImage img = new BufferedImage(mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
-                                              mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
-                                              BufferedImage.TYPE_BYTE_GRAY);
-        byte[] imgData = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
-        mImageData.readFully(imgData);
-        return img;
     }
 
     private BufferedImage getNextImageBlockMono16() throws IOException {

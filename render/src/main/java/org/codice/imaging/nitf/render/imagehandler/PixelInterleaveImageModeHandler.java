@@ -42,8 +42,8 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
         }
 
         try {
-            for (int row = 0; row < blockWidth; row++) {
-                for (int column = 0; column < blockHeight; column++) {
+            for (int row = 0; row < blockHeight; row++) {
+                for (int column = 0; column < blockWidth; column++) {
                     int i = row * blockWidth + column;
                     for (int bandIndex = 0; bandIndex < imageSegmentHeader.getNumBands(); ++bandIndex) {
                         int bandValue = imageInputStream.read();

@@ -16,12 +16,16 @@ package org.codice.imaging.nitf.render.imagehandler;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.util.function.Consumer;
 import javax.imageio.stream.ImageInputStream;
 import org.codice.imaging.nitf.core.image.ImageCompression;
 import org.codice.imaging.nitf.core.image.ImageMode;
+import org.codice.imaging.nitf.core.image.ImageRepresentation;
 import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 import org.codice.imaging.nitf.render.ImageMask;
 
@@ -57,7 +61,13 @@ abstract class SharedImageModeHandler {
     protected void renderBlock(NitfImageSegmentHeader imageSegmentHeader, Graphics2D targetImage, ImageBlock block) {
         final int blockWidth = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
         final int blockHeight = imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
-        RenderBlockInt(blockWidth, blockHeight, block, targetImage);
+        if (block.getData().getDataType() == DataBuffer.TYPE_INT) {
+            RenderBlockInt(blockWidth, blockHeight, block, targetImage);
+        } else if (block.getData().getDataType() == DataBuffer.TYPE_BYTE) {
+            RenderBlockByte(imageSegmentHeader, block, targetImage);
+        } else {
+            throw new UnsupportedOperationException("Cannot handle type:" + block.getData().getDataType());
+        }
     }
 
     private void RenderBlockInt(final int blockWidth, final int blockHeight, ImageBlock block, Graphics2D targetImage) {
@@ -68,6 +78,33 @@ abstract class SharedImageModeHandler {
         targetImage.drawImage(img, block.getColumn() * blockHeight, block.getRow() * blockWidth, null);
     }
 
+    private void RenderBlockByte(NitfImageSegmentHeader imageSegmentHeader, ImageBlock block, Graphics2D targetImage) {
+        BufferedImage img;
+        if (imageSegmentHeader.getImageRepresentation() == ImageRepresentation.MONOCHROME) {
+            img = new BufferedImage(imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
+                    imageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
+                    BufferedImage.TYPE_BYTE_GRAY);
+        } else if (imageSegmentHeader.getImageRepresentation() == ImageRepresentation.RGBLUT) {
+            IndexColorModel colourModel = new IndexColorModel(imageSegmentHeader.getActualBitsPerPixelPerBand(),
+                    imageSegmentHeader.getImageBandZeroBase(0).getNumLUTEntries(),
+                    imageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(0).getEntries(),
+                    imageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(1).getEntries(),
+                    imageSegmentHeader.getImageBandZeroBase(0).getLUTZeroBase(2).getEntries());
+            img = new BufferedImage(imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
+                    imageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
+                    BufferedImage.TYPE_BYTE_INDEXED, colourModel);
+        } else {
+            throw new UnsupportedOperationException("No rendering support for " + imageSegmentHeader.getImageRepresentation().getTextEquivalent());
+        }
+        byte[] imgData = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+        DataBufferByte sourceBlockData = (DataBufferByte) block.getData();
+        System.arraycopy(sourceBlockData.getData(), 0, imgData, 0, sourceBlockData.getData().length);
+        targetImage.drawImage(img,
+                block.getColumn() * imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
+                block.getRow() * imageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
+                null);
+
+    }
     /**
      *
      * {@inheritDoc}
