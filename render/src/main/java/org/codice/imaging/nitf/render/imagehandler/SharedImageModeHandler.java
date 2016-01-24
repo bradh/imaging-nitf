@@ -70,7 +70,7 @@ abstract class SharedImageModeHandler {
     public void handleImage(NitfImageSegmentHeader imageSegmentHeader, ImageInputStream imageInputStream, Graphics2D targetImage, ImageRepresentationHandler imageRepresentationHandler) throws IOException {
         validateHandleImageArgs(imageInputStream, imageSegmentHeader, targetImage, imageRepresentationHandler);
         readOrBuildImageMask(imageSegmentHeader, imageInputStream);
-        ImageBlockMatrix matrix = new ImageBlockMatrix(imageSegmentHeader.getNumberOfBlocksPerColumn(), imageSegmentHeader.getNumberOfBlocksPerRow(), imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal() * imageSegmentHeader.getNumberOfPixelsPerBlockVertical());
+        ImageBlockMatrix matrix = new ImageBlockMatrix(imageSegmentHeader);
         handleMatrix(imageSegmentHeader, matrix, imageInputStream, imageRepresentationHandler, targetImage);
     }
 

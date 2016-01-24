@@ -1,18 +1,24 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
+import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
+
 /**
- * The ImageMatrix represents image data stored in a rowcount x columncount matrix.
+ * The ImageBlockMatrix represents image data stored in a rowcount x columncount matrix of blocks.
  */
 class ImageBlockMatrix {
-    private ImageBlock[][] blocks;
+    final private ImageBlock[][] blocks;
 
     /**
+     * Construct a new ImageBlockMatrix.
      *
-     * @param rowCount - the number of rows in the matrix.
-     * @param columnCount - the number of columns in each matrix row.
-     * @param blockSize - the size of a single block in the matrix.
+     * @param imageSegmentHeader the image segment header specifying the blocked image matrix.
      */
-    public ImageBlockMatrix(int rowCount, int columnCount, int blockSize) {
+    ImageBlockMatrix(NitfImageSegmentHeader imageSegmentHeader) {
+        int rowCount = imageSegmentHeader.getNumberOfBlocksPerColumn();
+        int columnCount = imageSegmentHeader.getNumberOfBlocksPerRow();
+        int blockSize = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal()
+                * imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
+
         blocks = new ImageBlock[rowCount][columnCount];
 
         for (int i = 0; i < rowCount; i++) {
@@ -23,6 +29,7 @@ class ImageBlockMatrix {
     }
 
     /**
+     * Getter for image blocks.
      *
      * @param row - the row to retrieve the ImageBlock from.
      * @param column - the column to retrieve the ImageBlock from.
