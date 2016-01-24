@@ -1,5 +1,6 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
+import java.awt.image.DataBuffer;
 import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 
 /**
@@ -19,11 +20,22 @@ class ImageBlockMatrix {
         int blockSize = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal()
                 * imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
 
+        int dataType = DataBuffer.TYPE_UNDEFINED;
+        switch (imageSegmentHeader.getImageRepresentation()) {
+            case RGBTRUECOLOUR:
+            case MULTIBAND:
+                dataType = DataBuffer.TYPE_INT;
+                break;
+            default:
+                throw new UnsupportedOperationException("No support for "
+                        + imageSegmentHeader.getImageRepresentation().getTextEquivalent());
+        }
+
         blocks = new ImageBlock[rowCount][columnCount];
 
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < columnCount; j++) {
-                blocks[i][j] = new ImageBlock(i, j, blockSize);
+                blocks[i][j] = new ImageBlock(dataType, i, j, blockSize);
             }
         }
     }

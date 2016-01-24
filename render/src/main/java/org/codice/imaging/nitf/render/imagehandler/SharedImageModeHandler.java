@@ -57,9 +57,14 @@ abstract class SharedImageModeHandler {
     protected void renderBlock(NitfImageSegmentHeader imageSegmentHeader, Graphics2D targetImage, ImageBlock block) {
         final int blockWidth = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
         final int blockHeight = imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
+        RenderBlockInt(blockWidth, blockHeight, block, targetImage);
+    }
+
+    private void RenderBlockInt(final int blockWidth, final int blockHeight, ImageBlock block, Graphics2D targetImage) {
         BufferedImage img = new BufferedImage(blockWidth, blockHeight, BufferedImage.TYPE_INT_ARGB);
         int[] imgData = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-        System.arraycopy(block.getData().getData(), 0, imgData, 0, block.getData().getData().length);
+        DataBufferInt sourceBlockData = (DataBufferInt) block.getData();
+        System.arraycopy(sourceBlockData.getData(), 0, imgData, 0, sourceBlockData.getData().length);
         targetImage.drawImage(img, block.getColumn() * blockHeight, block.getRow() * blockWidth, null);
     }
 

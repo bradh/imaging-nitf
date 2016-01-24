@@ -15,7 +15,7 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
 import java.awt.Graphics2D;
-import java.awt.image.DataBufferInt;
+import java.awt.image.DataBuffer;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 import org.codice.imaging.nitf.core.image.ImageMode;
@@ -43,7 +43,7 @@ public class BlockInterleaveImageModeHandler extends SharedImageModeHandler impl
     private void readBlock(NitfImageSegmentHeader imageSegmentHeader, ImageBlock block,
             ImageInputStream imageInputStream, ImageRepresentationHandler imageRepresentationHandler) {
 
-        final DataBufferInt data = block.getData();
+        final DataBuffer data = block.getData();
         final int blockHeight = imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
         final int blockWidth = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
 

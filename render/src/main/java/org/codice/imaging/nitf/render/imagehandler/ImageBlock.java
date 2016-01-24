@@ -1,5 +1,6 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
+import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 
 /**
@@ -8,7 +9,7 @@ import java.awt.image.DataBufferInt;
 class ImageBlock {
     private int row;
     private int column;
-    private DataBufferInt data;
+    private DataBuffer data;
 
     /**
      *
@@ -16,10 +17,21 @@ class ImageBlock {
      * @param column - the column position of this ImageBlock in the larger image.
      * @param blockSize - the size of this block.
      */
-    public ImageBlock(int row, int column, int blockSize) {
+    public ImageBlock(int dataType, int row, int column, int blockSize) {
         this.row = row;
         this.column = column;
-        data = new DataBufferInt(blockSize);
+        createBufferByType(dataType, blockSize);
+
+    }
+
+    private void createBufferByType(int dataType, int blockSize) {
+        switch (dataType) {
+            case DataBuffer.TYPE_INT:
+                data = new DataBufferInt(blockSize);
+                break;
+            default:
+                throw new UnsupportedOperationException("No support for type: " + dataType);
+        }
     }
 
     /**
@@ -40,13 +52,13 @@ class ImageBlock {
 
     /**
      *
-     * @return the IntBuffer that contains the data for this ImageBlock.
+     * @return the data for this ImageBlock.
      */
-    public DataBufferInt getData() {
+    public DataBuffer getData() {
         return data;
     }
 
     void clear() {
-        data = new DataBufferInt(data.getSize());
+        createBufferByType(data.getDataType(), data.getSize());
     }
 }
