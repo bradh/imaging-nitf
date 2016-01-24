@@ -15,8 +15,8 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
 import java.awt.Graphics2D;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
-import java.nio.IntBuffer;
 import javax.imageio.stream.ImageInputStream;
 import org.codice.imaging.nitf.core.image.ImageMode;
 import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
@@ -33,7 +33,7 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
     private void readBlock(NitfImageSegmentHeader imageSegmentHeader, ImageBlock block,
             ImageInputStream imageInputStream, ImageRepresentationHandler imageRepresentationHandler) {
 
-        final IntBuffer data = block.getData();
+        final DataBufferInt data = block.getData();
         final int blockHeight = imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
         final int blockWidth = imageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
 
@@ -47,10 +47,10 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
                     int i = row * blockWidth + column;
                     for (int bandIndex = 0; bandIndex < imageSegmentHeader.getNumBands(); ++bandIndex) {
                         int bandValue = imageInputStream.read();
-                        data.put(i, imageRepresentationHandler.renderPixel(imageSegmentHeader, data.get(i), bandValue, bandIndex));
+                        data.setElem(i, imageRepresentationHandler.renderPixel(imageSegmentHeader, data.getElem(i), bandValue, bandIndex));
                     }
                     if (!imageMask.isPadPixel(i)) {
-                        data.put(i, data.get(i) | 0xFF000000);
+                        data.setElem(i, data.getElem(i) | 0xFF000000);
                     }
                 }
             }
@@ -74,7 +74,6 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
         forEachBlock(imageSegmentHeader, matrix, block -> {
             readBlock(imageSegmentHeader, block, imageInputStream, imageRepresentationHandler);
             renderBlock(imageSegmentHeader, targetImage, block);
-            block.getData().clear();
         });
     }
 }

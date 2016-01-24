@@ -1,6 +1,6 @@
 package org.codice.imaging.nitf.render.imagehandler;
 
-import java.nio.IntBuffer;
+import java.awt.image.DataBufferInt;
 
 /**
  * An ImageBlock represents a single block of a larger image.
@@ -8,7 +8,7 @@ import java.nio.IntBuffer;
 class ImageBlock {
     private int row;
     private int column;
-    private IntBuffer data;
+    private DataBufferInt data;
 
     /**
      *
@@ -19,7 +19,7 @@ class ImageBlock {
     public ImageBlock(int row, int column, int blockSize) {
         this.row = row;
         this.column = column;
-        this.data = IntBuffer.allocate(blockSize);
+        data = new DataBufferInt(blockSize);
     }
 
     /**
@@ -42,7 +42,11 @@ class ImageBlock {
      *
      * @return the IntBuffer that contains the data for this ImageBlock.
      */
-    public IntBuffer getData() {
+    public DataBufferInt getData() {
         return data;
+    }
+
+    void clear() {
+        data = new DataBufferInt(data.getSize());
     }
 }

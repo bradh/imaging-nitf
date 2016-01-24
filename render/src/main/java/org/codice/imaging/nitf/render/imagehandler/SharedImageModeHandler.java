@@ -59,7 +59,7 @@ abstract class SharedImageModeHandler {
         final int blockHeight = imageSegmentHeader.getNumberOfPixelsPerBlockVertical();
         BufferedImage img = new BufferedImage(blockWidth, blockHeight, BufferedImage.TYPE_INT_ARGB);
         int[] imgData = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-        System.arraycopy(block.getData().array(), 0, imgData, 0, block.getData().array().length);
+        System.arraycopy(block.getData().getData(), 0, imgData, 0, block.getData().getData().length);
         targetImage.drawImage(img, block.getColumn() * blockHeight, block.getRow() * blockWidth, null);
     }
 
