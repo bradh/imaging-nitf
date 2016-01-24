@@ -26,16 +26,8 @@ import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
  */
 public class BlockInterleaveImageModeHandler extends SharedImageModeHandler implements ImageModeHandler {
 
-    private static final String NULL_ARG_ERROR_MESSAGE
-            = "BlockInterleaveImageModeHandler(): argument '%s' may not be null.";
-
     @Override
-    String getNullArgErrorMessage() {
-        return NULL_ARG_ERROR_MESSAGE;
-    }
-
-    @Override
-    ImageMode getExpectedImageMode() {
+    protected ImageMode getExpectedImageMode() {
         return ImageMode.BLOCKINTERLEVE;
     }
 
@@ -81,4 +73,8 @@ public class BlockInterleaveImageModeHandler extends SharedImageModeHandler impl
         }
     }
 
+    @Override
+    protected String getHandlerClassName() {
+        return this.getClass().getName();
+    }
 }

@@ -26,17 +26,14 @@ import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
  */
 public class RowInterleaveImageModeHandler extends SharedImageModeHandler implements ImageModeHandler {
 
-    private static final String NULL_ARG_ERROR_MESSAGE
-            = "RowInterleaveImageModeHandler(): argument '%s' may not be null.";
-
     @Override
-    String getNullArgErrorMessage() {
-        return NULL_ARG_ERROR_MESSAGE;
+    protected ImageMode getExpectedImageMode() {
+        return ImageMode.ROWINTERLEVE;
     }
 
     @Override
-    ImageMode getExpectedImageMode() {
-        return ImageMode.ROWINTERLEVE;
+    protected String getHandlerClassName() {
+        return this.getClass().getName();
     }
 
     @Override

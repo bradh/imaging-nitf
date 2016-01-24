@@ -8,9 +8,6 @@ import org.codice.imaging.nitf.core.image.ImageMode;
 import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 
 public class BandSequentialImageModeHandler extends SharedImageModeHandler implements ImageModeHandler {
-    private static final String NULL_ARG_ERROR_MESSAGE =
-            "BandSequentialImageModeHandler(): argument '%s' may not be null.";
-
 
     @Override
     void handleMatrix(NitfImageSegmentHeader imageSegmentHeader, ImageBlockMatrix matrix, ImageInputStream imageInputStream, ImageRepresentationHandler imageRepresentationHandler, Graphics2D targetImage) {
@@ -72,12 +69,12 @@ public class BandSequentialImageModeHandler extends SharedImageModeHandler imple
     }
 
     @Override
-    String getNullArgErrorMessage() {
-        return NULL_ARG_ERROR_MESSAGE;
+    protected ImageMode getExpectedImageMode() {
+        return ImageMode.BANDSEQUENTIAL;
     }
 
     @Override
-    ImageMode getExpectedImageMode() {
-        return ImageMode.BANDSEQUENTIAL;
+    protected String getHandlerClassName() {
+        return this.getClass().getName();
     }
 }

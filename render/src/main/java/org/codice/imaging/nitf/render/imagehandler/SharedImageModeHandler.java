@@ -31,16 +31,18 @@ import org.codice.imaging.nitf.render.ImageMask;
  */
 abstract class SharedImageModeHandler {
     protected static final int NOT_VISIBLE_MAPPED = -1;
+    private static final String NULL_ARG_ERROR_MESSAGE
+            = "%s: argument '%s' may not be null.";
 
-    abstract String getNullArgErrorMessage();
+    protected abstract String getHandlerClassName();
 
-    abstract ImageMode getExpectedImageMode();
+    protected abstract ImageMode getExpectedImageMode();
 
     protected ImageMask imageMask = null;
 
     private void checkNull(Object value, String valueName) {
         if (value == null) {
-            throw new IllegalArgumentException(String.format(getNullArgErrorMessage(), valueName));
+            throw new IllegalArgumentException(String.format(NULL_ARG_ERROR_MESSAGE, getHandlerClassName(), valueName));
         }
     }
 

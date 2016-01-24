@@ -26,9 +26,6 @@ import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
  */
 public class PixelInterleaveImageModeHandler extends SharedImageModeHandler implements ImageModeHandler {
 
-    private static final String NULL_ARG_ERROR_MESSAGE
-            = "PixelInterleaveImageModeHandler(): argument '%s' may not be null.";
-
     public PixelInterleaveImageModeHandler() {
     }
 
@@ -66,13 +63,13 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
     }
 
     @Override
-    protected String getNullArgErrorMessage() {
-        return NULL_ARG_ERROR_MESSAGE;
+    protected ImageMode getExpectedImageMode() {
+        return ImageMode.PIXELINTERLEVE;
     }
 
     @Override
-    protected ImageMode getExpectedImageMode() {
-        return ImageMode.PIXELINTERLEVE;
+    protected String getHandlerClassName() {
+        return this.getClass().getName();
     }
 
     @Override
