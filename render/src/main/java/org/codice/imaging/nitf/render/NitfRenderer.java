@@ -31,6 +31,7 @@ import org.codice.imaging.nitf.render.imagehandler.BandSequentialImageModeHandle
 import org.codice.imaging.nitf.render.imagehandler.BlockInterleaveImageModeHandler;
 import org.codice.imaging.nitf.render.imagehandler.ImageModeHandler;
 import org.codice.imaging.nitf.render.imagehandler.ImageRepresentationHandler;
+import org.codice.imaging.nitf.render.imagehandler.MappedBandRepresentationHandler;
 import org.codice.imaging.nitf.render.imagehandler.PixelInterleaveImageModeHandler;
 import org.codice.imaging.nitf.render.imagehandler.RowInterleaveImageModeHandler;
 
@@ -44,11 +45,9 @@ public class NitfRenderer {
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.PIXELINTERLEVE, new PixelInterleaveImageModeHandler());
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.ROWINTERLEVE, new RowInterleaveImageModeHandler());
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.BLOCKINTERLEVE, new BlockInterleaveImageModeHandler());
-        // TODO: this only works for 8 bits per pixel per band. 
-        IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.RGBTRUECOLOUR, (currentValue, bandValue, bandIndex) ->
- currentValue | (bandValue << (8 * bandIndex)));
-        IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.MULTIBAND, (currentValue, bandValue, bandIndex)
-                -> currentValue | (bandValue << (8 * bandIndex)));
+        // TODO: this only works for 8 bits per pixel per band.
+        IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.RGBTRUECOLOUR, new MappedBandRepresentationHandler());
+        IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.MULTIBAND, new MappedBandRepresentationHandler());
     }
 
     public final void render(final NitfImageSegmentHeader imageSegmentHeader,

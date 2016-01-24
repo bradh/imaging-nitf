@@ -30,7 +30,6 @@ import org.codice.imaging.nitf.render.ImageMask;
  * @author bradh
  */
 abstract class SharedImageModeHandler {
-    protected static final int NOT_VISIBLE_MAPPED = -1;
     private static final String NULL_ARG_ERROR_MESSAGE
             = "%s: argument '%s' may not be null.";
 
@@ -99,22 +98,4 @@ abstract class SharedImageModeHandler {
             ImageInputStream imageInputStream,
             ImageRepresentationHandler imageRepresentationHandler,
             Graphics2D targetImage);
-
-    protected int mapImageBand(NitfImageSegmentHeader imageSegmentHeader, int bandIndex) {
-        int mappedBand;
-        switch (imageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation()) {
-            case "R":
-                mappedBand = 2;
-                break;
-            case "G":
-                mappedBand = 1;
-                break;
-            case "B":
-                mappedBand = 0;
-                break;
-            default:
-                mappedBand = RowInterleaveImageModeHandler.NOT_VISIBLE_MAPPED;
-        }
-        return mappedBand;
-    }
 }
