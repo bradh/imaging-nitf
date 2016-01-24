@@ -44,8 +44,11 @@ public class NitfRenderer {
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.PIXELINTERLEVE, new PixelInterleaveImageModeHandler());
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.ROWINTERLEVE, new RowInterleaveImageModeHandler());
         IMAGE_MODE_HANDLER_MAP.put(ImageMode.BLOCKINTERLEVE, new BlockInterleaveImageModeHandler());
+        // TODO: this only works for 8 bits per pixel per band. 
         IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.RGBTRUECOLOUR, (currentValue, bandValue, bandIndex) ->
- currentValue | (bandValue << (8 * (2 - bandIndex))));
+ currentValue | (bandValue << (8 * bandIndex)));
+        IMAGE_REPRESENTATION_HANDLER_MAP.put(ImageRepresentation.MULTIBAND, (currentValue, bandValue, bandIndex)
+                -> currentValue | (bandValue << (8 * bandIndex)));
     }
 
     public final void render(final NitfImageSegmentHeader imageSegmentHeader,

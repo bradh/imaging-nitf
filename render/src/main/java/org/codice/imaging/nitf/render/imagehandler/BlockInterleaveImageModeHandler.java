@@ -66,7 +66,10 @@ public class BlockInterleaveImageModeHandler extends SharedImageModeHandler impl
                     for (int column = 0; column < blockHeight; column++) {
                         int i = row * blockWidth + column;
                         int bandValue = imageInputStream.read();
-                        data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, bandIndex));
+                        int mappedBand = mapImageBand(imageSegmentHeader, bandIndex);
+                        if (mappedBand != NOT_VISIBLE_MAPPED) {
+                            data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, mappedBand));
+                        }
                         if (!imageMask.isPadPixel(i)) {
                             data.put(i, data.get(i) | 0xFF000000);
                         }

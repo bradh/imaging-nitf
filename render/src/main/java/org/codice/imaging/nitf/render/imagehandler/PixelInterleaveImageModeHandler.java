@@ -50,7 +50,10 @@ public class PixelInterleaveImageModeHandler extends SharedImageModeHandler impl
                     int i = row * blockWidth + column;
                     for (int bandIndex = 0; bandIndex < imageSegmentHeader.getNumBands(); ++bandIndex) {
                         int bandValue = imageInputStream.read();
-                        data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, bandIndex));
+                        int mappedBand = mapImageBand(imageSegmentHeader, bandIndex);
+                        if (mappedBand != NOT_VISIBLE_MAPPED) {
+                            data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, mappedBand));
+                        }
                     }
                     if (!imageMask.isPadPixel(i)) {
                         data.put(i, data.get(i) | 0xFF000000);

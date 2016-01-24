@@ -38,7 +38,10 @@ public class BandSequentialImageModeHandler extends SharedImageModeHandler imple
                 for (int column = 0; column < blockHeight; column++) {
                     int i = row * blockWidth + column;
                     int bandValue = imageInputStream.read();
-                    data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, bandIndex));
+                    int mappedBand = mapImageBand(imageSegmentHeader, bandIndex);
+                    if (mappedBand != NOT_VISIBLE_MAPPED) {
+                        data.put(i, imageRepresentationHandler.renderPixel(data.get(i), bandValue, mappedBand));
+                    }
                 }
             }
 

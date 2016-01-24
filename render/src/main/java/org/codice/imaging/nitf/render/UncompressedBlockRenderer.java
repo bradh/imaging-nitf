@@ -17,7 +17,6 @@ package org.codice.imaging.nitf.render;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -25,7 +24,6 @@ import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 import org.codice.imaging.nitf.core.image.ImageCompression;
 import org.codice.imaging.nitf.core.image.ImageMode;
-import org.codice.imaging.nitf.core.image.NitfImageBand;
 import org.codice.imaging.nitf.core.image.NitfImageSegmentHeader;
 import org.codice.imaging.nitf.core.image.PixelJustification;
 
@@ -64,8 +62,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
                 return getNextImageBlockMono();
             case RGBLUT:
                 return getNextImageBlockRGBLUT();
-            case MULTIBAND:
-                return getNextImageBlockMultiband();
             default:
                 System.out.println("Unhandled image representation:" + mImageSegmentHeader.getImageRepresentation());
                 return null;
@@ -114,15 +110,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
             default:
                 System.out.println("Unhandled RGBLUT bit depth:" + mImageSegmentHeader.getNumberOfBitsPerPixelPerBand());
                 return null;
-        }
-    }
-
-    private BufferedImage getNextImageBlockMultiband() throws IOException {
-        if (mImageSegmentHeader.getActualBitsPerPixelPerBand() == 8) {
-            return getNextImageBlockMultiband8();
-        } else {
-            System.out.println("Unhandled MULTIBAND bit depth:" + mImageSegmentHeader.getNumberOfBitsPerPixelPerBand());
-            return null;
         }
     }
 
@@ -216,126 +203,6 @@ public class UncompressedBlockRenderer implements BlockRenderer {
         }
 
         short[] imgData = ((DataBufferUShort)img.getRaster().getDataBuffer()).getData();
-        System.arraycopy(data, 0, imgData, 0, data.length);
-        return img;
-    }
-
-    private BufferedImage getNextImageBlockMultiband8() throws IOException {
-        // TODO: we need to determine the real representation first
-        BufferedImage img = new BufferedImage(mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(),
-                                              mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(),
-                                              BufferedImage.TYPE_INT_ARGB);
-        int[] data = new int[mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal() * mImageSegmentHeader.getNumberOfPixelsPerBlockVertical()];
-        if (mImageSegmentHeader.getImageMode() == ImageMode.PIXELINTERLEVE) {
-            for (int i = 0; i < data.length; ++i) {
-                data[i] = 0;
-                for (int bandIndex = 0; bandIndex < mImageSegmentHeader.getNumBands(); ++bandIndex) {
-                    NitfImageBand band = mImageSegmentHeader.getImageBandZeroBase(bandIndex);
-                    switch (mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation()) {
-                        case "R":
-                            data[i] = data[i] | (mImageData.read() << 16);
-                            break;
-                        case "G":
-                            data[i] = data[i] | (mImageData.read() << 8);
-                            break;
-                        case "B":
-                            data[i] = data[i] | mImageData.read();
-                            break;
-                        case "":
-                            mImageData.read();
-                            break;
-                        default:
-                            System.out.println("unhandled image representation: " + mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation());
-                            break;
-                    }
-                }
-                if ((mMask == null) || (!mMask.isPadPixel(data[i]))) {
-                    data[i] = data[i] | 0xFF000000;
-                }
-            }
-        } else if (mImageSegmentHeader.getImageMode() == ImageMode.ROWINTERLEVE) {
-            for (int row = 0; row < mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(); ++row) {
-                int rowStart = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
-                for (int bandIndex = 0; bandIndex < mImageSegmentHeader.getNumBands(); ++ bandIndex) {
-                    switch (mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation()) {
-                        case "R":
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | (mImageData.read() << 16);
-                            }
-                            break;
-                        case "G":
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | (mImageData.read() << 8);
-                            }
-                            break;
-                        case "B":
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | mImageData.read();
-                            }
-                            break;
-                        case "":
-                            mImageData.skipBytes(mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal());
-                            break;
-                        default:
-                            System.out.println("unhandled image representation: " + mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation());
-                            break;
-                    }
-
-                }
-                for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                    int i = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal() + column;
-                    if ((mMask == null) || (!mMask.isPadPixel(data[i]))) {
-                        data[i] = data[i] | 0xFF000000;
-                    }
-                }
-            }
-        } else if (mImageSegmentHeader.getImageMode() == ImageMode.BLOCKINTERLEVE) {
-            for (int bandIndex = 0; bandIndex < mImageSegmentHeader.getNumBands(); ++ bandIndex) {
-                switch (mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation()) {
-                    case "R":
-                        for (int row = 0; row < mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(); ++row) {
-                            int rowStart = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | (mImageData.read() << 16);
-                            }
-                        }
-                        break;
-                    case "G":
-                        for (int row = 0; row < mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(); ++row) {
-                            int rowStart = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | (mImageData.read() << 8);
-                            }
-                        }
-                        break;
-                    case "B":
-                        for (int row = 0; row < mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(); ++row) {
-                            int rowStart = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal();
-                            for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                                data[rowStart + column] = data[rowStart + column] | mImageData.read();
-                            }
-                        }
-                        break;
-                    case "":
-                        mImageData.skipBytes(mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal() * mImageSegmentHeader.getNumberOfPixelsPerBlockVertical());
-                        break;
-                    default:
-                        System.out.println("unhandled image representation: " + mImageSegmentHeader.getImageBandZeroBase(bandIndex).getImageRepresentation());
-                        break;
-                    }
-                }
-            for (int row = 0; row < mImageSegmentHeader.getNumberOfPixelsPerBlockVertical(); ++row) {
-                for (int column = 0; column < mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal(); ++column) {
-                    int i = row * mImageSegmentHeader.getNumberOfPixelsPerBlockHorizontal() + column;
-                    if ((mMask == null) || (!mMask.isPadPixel(data[i]))) {
-                        data[i] = data[i] | 0xFF000000;
-                    }
-                }
-            }
-        } else {
-            System.out.println("Unhandled image mode for MULTIBAND:" + mImageSegmentHeader.getImageMode());
-        }
-        int[] imgData = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
         System.arraycopy(data, 0, imgData, 0, data.length);
         return img;
     }
