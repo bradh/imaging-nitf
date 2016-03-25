@@ -73,6 +73,7 @@ class ImageSegmentImpl extends CommonBasicSegmentImpl implements ImageSegment {
     private int imageUserDefinedHeaderOverflow = 0;
     private String imageMagnification = null;
     private ImageInputStream imageData = null;
+    private long dataLength = 0;
 
     private static final int BITS_PER_BYTE = 8;
 
@@ -995,6 +996,16 @@ class ImageSegmentImpl extends CommonBasicSegmentImpl implements ImageSegment {
     @Override
     public void setData(final ImageInputStream data) {
         imageData = data;
+    }
+
+    @Override
+    public final long getDataLength() {
+        return dataLength;
+    }
+
+    @Override
+    public void setDataLength(final long length) {
+        dataLength = length;
     }
 
     /**

@@ -123,17 +123,16 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
      * Parse the image segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the segment to read (zero base)
      * @param parseData whether to parse the associated data (true) or only to parse the header, skipping over the data
      * (false)
+     * @param dataLength the length of the data associated with this segment.
      * @return the segment
      * @throws ParseException on parse error
      */
-    protected final ImageSegment readImageSegment(final NitfReader reader, final int i, final boolean parseData)
+    protected final ImageSegment readImageSegment(final NitfReader reader, final boolean parseData, final long dataLength)
             throws ParseException {
         ImageSegmentParser imageSegmentParser = new ImageSegmentParser();
-        ImageSegment imageSegment = imageSegmentParser.parse(reader, this);
-        long dataLength = nitfStorage.getNitfHeader().getImageSegmentDataLengths().get(i);
+        ImageSegment imageSegment = imageSegmentParser.parse(reader, this, dataLength);
         if (parseData) {
             if (dataLength > 0) {
                 ImageInputStream iis = imageHeapStrategy.handleSegment(reader, dataLength);
@@ -152,7 +151,8 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
      *
      * @param reader Reader to use for reading
      * @param parseData whether to extract associated data (true) or to parse only the header and skip over the data
-     * @param dataLength the length of the data associated with this segment.     * (false)
+     * (false)
+     * @param dataLength the length of the data associated with this segment.
      * @return the segment header data
      * @throws ParseException on parse error
      */

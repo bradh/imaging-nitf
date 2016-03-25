@@ -83,12 +83,15 @@ public class ImageSegmentParser extends AbstractSegmentParser {
      * protect against parallel runs.
      * @param nitfReader the reader to use to get the data
      * @param parseStrategy the parsing strategy to use to process the data
+     * @param dataLength the length of the data associated with this segment.
      * @return the parsed image segment
      * @throws ParseException on parse failure
      */
-    public final ImageSegmentImpl parse(final NitfReader nitfReader, final NitfParseStrategy parseStrategy) throws ParseException {
+    public final ImageSegmentImpl parse(final NitfReader nitfReader, final NitfParseStrategy parseStrategy,
+            final long dataLength) throws ParseException {
         reader = nitfReader;
         segment = new ImageSegmentImpl();
+        segment.setDataLength(dataLength);
         parsingStrategy = parseStrategy;
 
         readIM();
