@@ -14,8 +14,8 @@
  */
 package org.codice.imaging.nitf.core.label;
 
-import org.codice.imaging.nitf.core.common.CommonBasicSegmentImpl;
 import org.codice.imaging.nitf.core.RGBColour;
+import org.codice.imaging.nitf.core.common.CommonBasicSegmentImpl;
 
 /**
     Label segment information (NITF 2.0 only).
@@ -213,6 +213,14 @@ class LabelSegmentImpl extends CommonBasicSegmentImpl implements LabelSegment {
     @Override
     public void setData(final String labelData) {
         labelText = labelData;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getHeaderLength() {
+        return 0;
     }
 
 }

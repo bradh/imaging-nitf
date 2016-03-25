@@ -203,4 +203,13 @@ class DataExtensionSegmentImpl extends CommonSegmentImpl implements DataExtensio
     public ImageInputStream getData() {
         return desData;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getHeaderLength() {
+        return 0;
+    }
+
 }

@@ -213,13 +213,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     List<Integer> getTextSegmentDataLengths();
 
     /**
-     * Return the text segment subheader lengths.
-     *
-     * @return the list of text segment subheader lengths
-     */
-    List<Integer> getTextSegmentSubHeaderLengths();
-
-    /**
      * Return the user defined header overflow (UDHOFL) for the file.
      * <p>
      * This is the (1-base) index of the TRE into which user defined header data

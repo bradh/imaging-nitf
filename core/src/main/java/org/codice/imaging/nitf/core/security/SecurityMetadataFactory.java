@@ -60,6 +60,7 @@ public final class SecurityMetadataFactory {
     }
 
     private static void fillDefaultMetadata(final SecurityMetadataImpl meta, final FileType fileType) {
+        meta.setFileType(fileType);
         meta.setSecurityClassification(SecurityClassification.UNCLASSIFIED);
         meta.setSecurityClassificationSystem("");
         if (fileType.equals(FileType.NITF_TWO_ONE) || fileType.equals(FileType.NSIF_ONE_ZERO)) {

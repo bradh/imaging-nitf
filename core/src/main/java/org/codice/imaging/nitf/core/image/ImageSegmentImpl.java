@@ -978,4 +978,12 @@ class ImageSegmentImpl extends CommonBasicSegmentImpl implements ImageSegment {
         imageData = data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getHeaderLength() {
+        return 0;
+    }
+
 }

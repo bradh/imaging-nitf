@@ -309,4 +309,13 @@ class GraphicSegmentImpl extends CommonBasicSegmentImpl
     public ImageInputStream getData() {
         return dataStream;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getHeaderLength() {
+        return 0;
+    }
+
 }

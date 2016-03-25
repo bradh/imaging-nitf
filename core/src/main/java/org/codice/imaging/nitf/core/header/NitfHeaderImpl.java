@@ -420,16 +420,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     }
 
     /**
-     * Return the text segment subheader lengths.
-     *
-     * @return the list of text segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getTextSegmentSubHeaderLengths() {
-        return ltsh;
-    }
-
-    /**
      * Return the text segment data lengths.
      *
      * @return the list of text segment data lengths

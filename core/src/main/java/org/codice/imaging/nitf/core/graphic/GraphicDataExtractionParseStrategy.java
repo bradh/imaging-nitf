@@ -25,7 +25,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleImageSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleImageSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getImageSegments().add(readImageSegment(reader, i, false));
     }
 
@@ -33,7 +33,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleSymbolSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleSymbolSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getSymbolSegments().add(readSymbolSegment(reader, i, false));
     }
 
@@ -41,7 +41,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleLabelSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleLabelSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getLabelSegments().add(readLabelSegment(reader, i, false));
     }
 
@@ -49,7 +49,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleGraphicSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleGraphicSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getGraphicSegments().add(readGraphicSegment(reader, i, true));
     }
 
@@ -57,7 +57,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleTextSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleTextSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getTextSegments().add(readTextSegment(reader, i, false));
     }
 
@@ -65,7 +65,7 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    protected final void handleDataExtensionSegment(final NitfReader reader, final int i) throws ParseException {
+    public final void handleDataExtensionSegment(final NitfReader reader, final int i) throws ParseException {
         nitfStorage.getDataExtensionSegments().add(readDataExtensionSegment(reader, i, false));
     }
 

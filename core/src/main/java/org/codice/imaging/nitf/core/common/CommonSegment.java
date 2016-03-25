@@ -14,6 +14,8 @@
  */
 package org.codice.imaging.nitf.core.common;
 
+import java.io.IOException;
+import java.text.ParseException;
 import org.codice.imaging.nitf.core.security.SecurityMetadata;
 
 /**
@@ -61,5 +63,14 @@ public interface CommonSegment extends TaggedRecordExtensionHandler {
      */
     void setSecurityMetadata(final SecurityMetadata metaData);
 
+    /**
+     * Get the length of this segment, excluding the data.
+     *
+     * @return actual header length in bytes.
+     *
+     * @throws java.text.ParseException if the underlying data length could not be calculated
+     * @throws java.io.IOException if there was a problem reading configuration data
+     */
+    long getHeaderLength() throws ParseException, IOException;
 
 }

@@ -95,7 +95,7 @@ public class ImageSegmentWriter extends AbstractSegmentWriter {
         writeDateTime(imageSegment.getImageDateTime());
         writeFixedLengthString(imageSegment.getImageTargetId().toString(), TGTID_LENGTH);
         writeFixedLengthString(imageSegment.getImageIdentifier2(), IID2_LENGTH);
-        writeSecurityMetadata(imageSegment.getSecurityMetadata(), fileType);
+        writeSecurityMetadata(imageSegment.getSecurityMetadata());
         writeENCRYP();
         writeFixedLengthString(imageSegment.getImageSource(), ISORCE_LENGTH);
         writeFixedLengthNumber(imageSegment.getNumberOfRows(), NROWS_LENGTH);

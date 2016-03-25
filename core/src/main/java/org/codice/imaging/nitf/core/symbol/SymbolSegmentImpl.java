@@ -399,4 +399,13 @@ class SymbolSegmentImpl extends CommonBasicSegmentImpl implements SymbolSegment 
     public void setData(final ImageInputStream data) {
         dataStream = data;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getHeaderLength() {
+        return 0;
+    }
+
 }
