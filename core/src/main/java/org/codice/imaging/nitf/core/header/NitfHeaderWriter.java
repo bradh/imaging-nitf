@@ -111,7 +111,7 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
 
         long fileLength = headerLength;
         for (int i = 0; i < numberOfImageSegments; ++i) {
-            fileLength += header.getImageSegmentSubHeaderLengths().get(i);
+            fileLength += dataSource.getImageSegments().get(i).getHeaderLength();
             fileLength += header.getImageSegmentDataLengths().get(i);
         }
         for (int i = 0; i < numberOfGraphicSegments; ++i) {
@@ -141,7 +141,7 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
         writeFixedLengthNumber(headerLength, NitfHeaderConstants.HL_LENGTH);
         writeFixedLengthNumber(numberOfImageSegments, NitfHeaderConstants.NUMI_LENGTH);
         for (int i = 0; i < numberOfImageSegments; ++i) {
-            writeFixedLengthNumber(header.getImageSegmentSubHeaderLengths().get(i), NitfHeaderConstants.LISH_LENGTH);
+            writeFixedLengthNumber(dataSource.getImageSegments().get(i).getHeaderLength(), NitfHeaderConstants.LISH_LENGTH);
             writeFixedLengthNumber(header.getImageSegmentDataLengths().get(i), NitfHeaderConstants.LI_LENGTH);
         }
         if ((header.getFileType() == FileType.NITF_TWO_ONE) || (header.getFileType() == FileType.NSIF_ONE_ZERO)) {

@@ -124,13 +124,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     List<Long> getImageSegmentDataLengths();
 
     /**
-     * Return the image segment subheader lengths.
-     *
-     * @return the list of image segment subheader lengths
-     */
-    List<Integer> getImageSegmentSubHeaderLengths();
-
-    /**
      * Return the originating station identifier (OSTAID) for the file.
      *
      * "This field shall contain the identification code or name of the

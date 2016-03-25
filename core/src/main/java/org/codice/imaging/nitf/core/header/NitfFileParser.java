@@ -52,6 +52,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     private int extendedHeaderDataLength = 0;
 
     private NitfHeaderImpl nitfFileHeader = null;
+    private final List<Integer> lish = new ArrayList<>();
     private final List<Integer> llsh = new ArrayList<>();
     private final List<Integer> ll = new ArrayList<>();
     private final List<Integer> ltsh = new ArrayList<>();
@@ -84,7 +85,8 @@ public final class NitfFileParser extends AbstractSegmentParser {
         NitfHeader nitfHeader = parser.nitfFileHeader;
 
         try {
-            for (int i = 0; i < nitfHeader.getImageSegmentSubHeaderLengths().size(); ++i) {
+            for (int i = 0; i < parser.lish.size(); ++i) {
+                // TODO: modify this to pass in the li.get(i) values
                 parseStrategy.handleImageSegment(nitfReader, i);
             }
             if (nitfHeader.getFileType() == FileType.NITF_TWO_ZERO) {
@@ -342,10 +344,10 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLISH(final int i) throws ParseException {
-        if (i < nitfFileHeader.getImageSegmentSubHeaderLengths().size()) {
-            nitfFileHeader.getImageSegmentSubHeaderLengths().set(i, reader.readBytesAsInteger(NitfHeaderConstants.LISH_LENGTH));
+        if (i < lish.size()) {
+            lish.set(i, reader.readBytesAsInteger(NitfHeaderConstants.LISH_LENGTH));
         } else {
-            nitfFileHeader.getImageSegmentSubHeaderLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LISH_LENGTH));
+            lish.add(reader.readBytesAsInteger(NitfHeaderConstants.LISH_LENGTH));
         }
     }
 

@@ -39,12 +39,9 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     private int nitfUserDefinedHeaderOverflow = 0;
     private int nitfExtendedHeaderDataOverflow = 0;
 
-    private final List<Integer> lish = new ArrayList<>();
     private final List<Long> li = new ArrayList<>();
     private final List<Integer> lssh = new ArrayList<>();
     private final List<Integer> ls = new ArrayList<>();
-    private final List<Integer> llsh = new ArrayList<>();
-    private final List<Integer> ll = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
     private final List<Integer> ld = new ArrayList<>();
 
@@ -331,16 +328,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     @Override
     public final int getUserDefinedHeaderOverflow() {
         return nitfUserDefinedHeaderOverflow;
-    }
-
-    /**
-     * Return the image segment subheader lengths.
-     *
-     * @return the list of image segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getImageSegmentSubHeaderLengths() {
-        return lish;
     }
 
     /**

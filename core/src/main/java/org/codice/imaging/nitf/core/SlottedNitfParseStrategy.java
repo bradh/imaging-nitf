@@ -119,7 +119,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         }
     }
 
-//<editor-fold defaultstate="collapsed" desc="Image segment methods">
     /**
      * Parse the image segment.
      *
@@ -147,7 +146,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         }
         return imageSegment;
     }
-//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Graphic segment methods">
     /**
