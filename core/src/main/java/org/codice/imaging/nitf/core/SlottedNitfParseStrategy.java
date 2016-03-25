@@ -242,16 +242,15 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
      * Parse the text segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the segment to read (zero base)
+     * @param dataLength the length of the data part of the segment
      * @param parseData whether to extract associated text data (true) or just parse the header and skip the text
      * (false)
      * @return the text segment
      * @throws ParseException on parse error
      */
-    protected final TextSegment readTextSegment(final NitfReader reader, final int i, final boolean parseData) throws ParseException {
+    protected final TextSegment readTextSegment(final NitfReader reader, final long dataLength, final boolean parseData) throws ParseException {
         TextSegmentParser textSegmentParser = new TextSegmentParser();
         TextSegment textSegment = textSegmentParser.parse(reader, this);
-        long dataLength = nitfStorage.getNitfHeader().getTextSegmentDataLengths().get(i);
         if (parseData) {
             if (dataLength > 0) {
                 String text = reader.readBytes((int) dataLength);

@@ -98,7 +98,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
                 }
             }
             for (int i = 0; i < parser.ltsh.size(); ++i) {
-                parseStrategy.handleTextSegment(nitfReader, i);
+                parseStrategy.handleTextSegment(nitfReader, parser.lt.get(i));
             }
             for (int i = 0; i < nitfHeader.getDataExtensionSegmentSubHeaderLengths().size(); ++i) {
                 parseStrategy.handleDataExtensionSegment(nitfReader, i);
@@ -393,7 +393,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLT() throws ParseException {
-        nitfFileHeader.getTextSegmentDataLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LT_LENGTH));
+        lt.add(reader.readBytesAsInteger(NitfHeaderConstants.LT_LENGTH));
     }
 
     private void readNUMDES() throws ParseException {

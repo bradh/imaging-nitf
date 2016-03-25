@@ -57,8 +57,8 @@ class GraphicDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    public final void handleTextSegment(final NitfReader reader, final int i) throws ParseException {
-        nitfStorage.getTextSegments().add(readTextSegment(reader, i, false));
+    public final void handleTextSegment(final NitfReader reader, final long dataLength) throws ParseException {
+        nitfStorage.getTextSegments().add(readTextSegment(reader, dataLength, false));
     }
 
     /**

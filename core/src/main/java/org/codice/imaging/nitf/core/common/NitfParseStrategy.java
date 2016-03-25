@@ -54,10 +54,10 @@ public interface NitfParseStrategy {
      * Handle the text segment header and data.
      *
      * @param reader the reader to use, assumed to be positioned at the start of the header
-     * @param i the index (zero base) of the segment to read
+     * @param dataLength the length of the data in this segment.
      * @throws ParseException if there is a problem handling the segment
      */
-    void handleTextSegment(final NitfReader reader, final int i) throws ParseException;
+    void handleTextSegment(final NitfReader reader, final long dataLength) throws ParseException;
 
     /**
      * Handle the data extension segment header and data.
