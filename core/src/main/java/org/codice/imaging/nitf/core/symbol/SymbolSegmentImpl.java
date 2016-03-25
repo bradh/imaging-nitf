@@ -43,6 +43,7 @@ class SymbolSegmentImpl extends CommonBasicSegmentImpl implements SymbolSegment 
     private int symbolRotation = 0;
     private SymbolColour symbolColourFormat = SymbolColour.UNKNOWN;
     private ImageInputStream dataStream = null;
+    private long dataLength = 0;
 
     /**
         Default constructor.
@@ -438,6 +439,16 @@ class SymbolSegmentImpl extends CommonBasicSegmentImpl implements SymbolSegment 
             headerLength += extendedDataLength;
         }
         return headerLength;
+    }
+
+    @Override
+    public final long getDataLength() {
+        return dataLength;
+    }
+
+    @Override
+    public void setDataLength(final long length) {
+        dataLength = length;
     }
 
 }

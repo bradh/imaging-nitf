@@ -54,6 +54,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     private NitfHeaderImpl nitfFileHeader = null;
     private final List<Integer> lish = new ArrayList<>();
     private final List<Integer> lssh = new ArrayList<>();
+    private final List<Integer> ls = new ArrayList<>();
     private final List<Integer> llsh = new ArrayList<>();
     private final List<Integer> ll = new ArrayList<>();
     private final List<Integer> ltsh = new ArrayList<>();
@@ -93,14 +94,14 @@ public final class NitfFileParser extends AbstractSegmentParser {
             }
             if (nitfHeader.getFileType() == FileType.NITF_TWO_ZERO) {
                 for (int i = 0; i < parser.lssh.size(); ++i) {
-                    parseStrategy.handleSymbolSegment(nitfReader, i);
+                    parseStrategy.handleSymbolSegment(nitfReader, parser.ls.get(i));
                 }
                 for (int i = 0; i < parser.llsh.size(); ++i) {
                     parseStrategy.handleLabelSegment(nitfReader, parser.ll.get(i));
                 }
             } else {
                 for (int i = 0; i < parser.lssh.size(); ++i) {
-                    parseStrategy.handleGraphicSegment(nitfReader, i);
+                    parseStrategy.handleGraphicSegment(nitfReader, parser.ls.get(i));
                 }
             }
             for (int i = 0; i < parser.ltsh.size(); ++i) {
@@ -371,7 +372,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLS() throws ParseException {
-        nitfFileHeader.getGraphicSegmentDataLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LS_LENGTH));
+        ls.add(reader.readBytesAsInteger(NitfHeaderConstants.LS_LENGTH));
     }
 
     private void readNUMX() throws ParseException {

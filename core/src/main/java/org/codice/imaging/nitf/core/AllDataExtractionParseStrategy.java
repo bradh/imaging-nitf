@@ -33,8 +33,8 @@ public class AllDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    public final void handleSymbolSegment(final NitfReader reader, final int i) throws ParseException {
-        nitfStorage.getSymbolSegments().add(readSymbolSegment(reader, i, true));
+    public final void handleSymbolSegment(final NitfReader reader, final long dataLength) throws ParseException {
+        nitfStorage.getSymbolSegments().add(readSymbolSegment(reader, true, dataLength));
     }
 
     /**
@@ -49,8 +49,8 @@ public class AllDataExtractionParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    public final void handleGraphicSegment(final NitfReader reader, final int i) throws ParseException {
-        nitfStorage.getGraphicSegments().add(readGraphicSegment(reader, i, true));
+    public final void handleGraphicSegment(final NitfReader reader, final long dataLength) throws ParseException {
+        nitfStorage.getGraphicSegments().add(readGraphicSegment(reader, true, dataLength));
     }
 
     /**

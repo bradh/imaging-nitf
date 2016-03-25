@@ -147,21 +147,18 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         return imageSegment;
     }
 
-//<editor-fold defaultstate="collapsed" desc="Graphic segment methods">
     /**
      * Parse the graphic segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the header to read (zero base)
      * @param parseData whether to extract associated data (true) or to parse only the header and skip over the data
-     * (false)
+     * @param dataLength the length of the data associated with this segment.     * (false)
      * @return the segment header data
      * @throws ParseException on parse error
      */
-    protected final GraphicSegment readGraphicSegment(final NitfReader reader, final int i, final boolean parseData) throws ParseException {
+    protected final GraphicSegment readGraphicSegment(final NitfReader reader, final boolean parseData, final long dataLength) throws ParseException {
         GraphicSegmentParser graphicSegmentParser = new GraphicSegmentParser();
-        GraphicSegment graphicSegment = graphicSegmentParser.parse(reader, this);
-        long dataLength = nitfStorage.getNitfHeader().getGraphicSegmentDataLengths().get(i);
+        GraphicSegment graphicSegment = graphicSegmentParser.parse(reader, this, dataLength);
         if (parseData) {
             if (dataLength > 0) {
                 // TODO: [IMG-77] this implementation probably should have a file-backed option
@@ -175,25 +172,21 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         }
         return graphicSegment;
     }
-//</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="Symbol segment methods">
     /**
      * Parse the symbol segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the header to read (zero base)
      * @param parseData whether to parse (true) or skip (false) the data for this symbol segment
+     * @param dataLength the length of the data associated with this segment.
      * @return the segment header data
      * @throws ParseException on parse error
      */
-    protected final SymbolSegment readSymbolSegment(final NitfReader reader, final int i, final boolean parseData) throws ParseException {
+    protected final SymbolSegment readSymbolSegment(final NitfReader reader, final boolean parseData, final long dataLength) throws ParseException {
         SymbolSegmentParser symbolSegmentParser = new SymbolSegmentParser();
-        SymbolSegment symbolSegment = symbolSegmentParser.parse(reader, this);
-        long dataLength = nitfStorage.getNitfHeader().getSymbolSegmentDataLengths().get(i);
+        SymbolSegment symbolSegment = symbolSegmentParser.parse(reader, this, dataLength);
         if (parseData) {
             if (dataLength > 0) {
-                // TODO: [IMG-77] this implementation probably should have a file-backed option
                 byte[] bytes = reader.readBytesRaw((int) dataLength);
                 symbolSegment.setData(new MemoryCacheImageInputStream(new ByteArrayInputStream(bytes)));
             }
@@ -204,7 +197,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         }
         return symbolSegment;
     }
-//</editor-fold>
 
     /**
      * Parse the label segment.

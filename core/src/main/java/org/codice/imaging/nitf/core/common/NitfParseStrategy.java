@@ -72,10 +72,10 @@ public interface NitfParseStrategy {
      * Handle the graphic segment header and data.
      *
      * @param reader the reader to use, assumed to be positioned at the start of the header
-     * @param i the index (zero base) of the segment to read
+     * @param dataLength the length of the data in this segment.
      * @throws ParseException if there is a problem handling the segment
      */
-    void handleGraphicSegment(final NitfReader reader, final int i) throws ParseException;
+    void handleGraphicSegment(final NitfReader reader, final long dataLength) throws ParseException;
 
     /**
      * Handle the image segment header and data.
@@ -99,9 +99,9 @@ public interface NitfParseStrategy {
      * Handle the symbol segment header and data.
      *
      * @param reader the reader to use, assumed to be positioned at the start of the header
-     * @param i the index (zero base) of the segment to read
+     * @param dataLength the length of the data in this segment.
      * @throws ParseException if there is a problem handling the segment
      */
-    void handleSymbolSegment(final NitfReader reader, final int i) throws ParseException;
+    void handleSymbolSegment(final NitfReader reader, final long dataLength) throws ParseException;
 
 }

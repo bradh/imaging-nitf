@@ -38,6 +38,7 @@ class GraphicSegmentImpl extends CommonBasicSegmentImpl
     private int boundingBox2Row = 0;
     private int boundingBox2Column = 0;
     private ImageInputStream dataStream = null;
+    private long dataLength = 0;
 
     /**
         Default constructor.
@@ -344,4 +345,13 @@ class GraphicSegmentImpl extends CommonBasicSegmentImpl
         return headerLength;
     }
 
+    @Override
+    public final long getDataLength() {
+        return dataLength;
+    }
+
+    @Override
+    public void setDataLength(final long length) {
+        dataLength = length;
+    }
 }
