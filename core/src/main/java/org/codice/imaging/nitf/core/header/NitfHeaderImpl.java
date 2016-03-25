@@ -40,7 +40,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     private int nitfExtendedHeaderDataOverflow = 0;
 
     private final List<Long> li = new ArrayList<>();
-    private final List<Integer> lssh = new ArrayList<>();
     private final List<Integer> ls = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
     private final List<Integer> ld = new ArrayList<>();
@@ -340,15 +339,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
         return li;
     }
 
-    /**
-     * Return the graphic (or symbol) segment subheader lengths.
-     *
-     * @return the list of graphic segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getGraphicSegmentSubHeaderLengths() {
-        return lssh;
-    }
 
     /**
      * Return the graphic (or symbol) segment data lengths.
@@ -358,16 +348,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     @Override
     public final List<Integer> getGraphicSegmentDataLengths() {
         return ls;
-    }
-
-    /**
-     * Return the symbol (or graphic) segment subheader lengths.
-     *
-     * @return the list of symbol segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getSymbolSegmentSubHeaderLengths() {
-        return lssh;
     }
 
     /**

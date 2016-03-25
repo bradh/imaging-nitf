@@ -110,13 +110,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     List<Integer> getGraphicSegmentDataLengths();
 
     /**
-     * Return the graphic (or symbol) segment subheader lengths.
-     *
-     * @return the list of graphic segment subheader lengths
-     */
-    List<Integer> getGraphicSegmentSubHeaderLengths();
-
-    /**
      * Return the image segment data lengths.
      *
      * @return the list of image segment data lengths
@@ -172,13 +165,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
      * @return the list of symbol segment data lengths
      */
     List<Integer> getSymbolSegmentDataLengths();
-
-    /**
-     * Return the symbol (or graphic) segment subheader lengths.
-     *
-     * @return the list of symbol segment subheader lengths
-     */
-    List<Integer> getSymbolSegmentSubHeaderLengths();
 
     /**
      * Return the user defined header overflow (UDHOFL) for the file.

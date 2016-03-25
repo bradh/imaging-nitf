@@ -115,11 +115,11 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
             fileLength += header.getImageSegmentDataLengths().get(i);
         }
         for (int i = 0; i < numberOfGraphicSegments; ++i) {
-            fileLength += header.getGraphicSegmentSubHeaderLengths().get(i);
+            fileLength += dataSource.getGraphicSegments().get(i).getHeaderLength();
             fileLength += header.getGraphicSegmentDataLengths().get(i);
         }
         for (int i = 0; i < numberOfSymbolSegments; ++i) {
-            fileLength += header.getSymbolSegmentSubHeaderLengths().get(i);
+            fileLength += dataSource.getSymbolSegments().get(i).getHeaderLength();
             fileLength += header.getSymbolSegmentDataLengths().get(i);
         }
         for (LabelSegment labelSegment : dataSource.getLabelSegments()) {
@@ -147,14 +147,14 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
         if ((header.getFileType() == FileType.NITF_TWO_ONE) || (header.getFileType() == FileType.NSIF_ONE_ZERO)) {
             writeFixedLengthNumber(numberOfGraphicSegments, NitfHeaderConstants.NUMS_LENGTH);
             for (int i = 0; i < numberOfGraphicSegments; ++i) {
-                writeFixedLengthNumber(header.getGraphicSegmentSubHeaderLengths().get(i), NitfHeaderConstants.LSSH_LENGTH);
+                writeFixedLengthNumber(dataSource.getGraphicSegments().get(i).getHeaderLength(), NitfHeaderConstants.LSSH_LENGTH);
                 writeFixedLengthNumber(header.getGraphicSegmentDataLengths().get(i), NitfHeaderConstants.LS_LENGTH);
             }
             writeFixedLengthNumber(0, NitfHeaderConstants.NUMX_LENGTH);
         } else {
             writeFixedLengthNumber(numberOfSymbolSegments, NitfHeaderConstants.NUMS_LENGTH);
             for (int i = 0; i < numberOfSymbolSegments; ++i) {
-                writeFixedLengthNumber(header.getSymbolSegmentSubHeaderLengths().get(i), NitfHeaderConstants.LSSH_LENGTH);
+                writeFixedLengthNumber(dataSource.getSymbolSegments().get(i).getHeaderLength(), NitfHeaderConstants.LSSH_LENGTH);
                 writeFixedLengthNumber(header.getSymbolSegmentDataLengths().get(i), NitfHeaderConstants.LS_LENGTH);
             }
             writeFixedLengthNumber(numberOfLabelSegments, NitfHeaderConstants.NUML20_LENGTH);
