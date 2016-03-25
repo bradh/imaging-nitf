@@ -45,8 +45,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     private final List<Integer> ls = new ArrayList<>();
     private final List<Integer> llsh = new ArrayList<>();
     private final List<Integer> ll = new ArrayList<>();
-    private final List<Integer> ltsh = new ArrayList<>();
-    private final List<Integer> lt = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
     private final List<Integer> ld = new ArrayList<>();
 
@@ -393,30 +391,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     @Override
     public final List<Integer> getSymbolSegmentDataLengths() {
         return ls;
-    }
-
-    /**
-     * Return the label segment subheader lengths.
-     *
-     * This will always be an empty list for NITF 2.1 / NSIF 1.0 file, which do not have label segments.
-     *
-     * @return the list of label segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getLabelSegmentSubHeaderLengths() {
-        return llsh;
-    }
-
-    /**
-     * Return the label segment data lengths.
-     *
-     * This will always be an empty list for NITF 2.1 / NSIF 1.0 file, which do not have label segments.
-     *
-     * @return the list of label segment data lengths
-     */
-    @Override
-    public final List<Integer> getLabelSegmentDataLengths() {
-        return ll;
     }
 
     /**

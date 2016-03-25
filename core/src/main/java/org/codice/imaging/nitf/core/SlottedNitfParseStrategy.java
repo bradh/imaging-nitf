@@ -208,23 +208,21 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
     }
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="Label Segment Methods">
     /**
      * Parse the label segment.
      *
      * The reader will be positioned at the start of the associated data segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the header to read (zero base)
+     * @param dataLength the length of the data part of the segment
      * @param parseData whether to parse out the text for the label (true) or just parse the header and skip the text
      * (false)
      * @return the segment header data
      * @throws ParseException on parse error
      */
-    protected final LabelSegment readLabelSegment(final NitfReader reader, final int i, final boolean parseData) throws ParseException {
+    protected final LabelSegment readLabelSegment(final NitfReader reader, final long dataLength, final boolean parseData) throws ParseException {
         LabelSegmentParser labelSegmentParser = new LabelSegmentParser();
         LabelSegment labelSegment = labelSegmentParser.parse(reader, this);
-        final long dataLength = nitfStorage.getNitfHeader().getLabelSegmentDataLengths().get(i);
         if (parseData) {
             if (dataLength > 0) {
                 labelSegment.setData(reader.readBytes((int) dataLength));
@@ -236,7 +234,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         }
         return labelSegment;
     }
-//</editor-fold>
 
     /**
      * Parse the text segment.

@@ -131,24 +131,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     List<Integer> getImageSegmentSubHeaderLengths();
 
     /**
-     * Return the label segment data lengths.
-     *
-     * This will always be an empty list for NITF 2.1 / NSIF 1.0 file, which do not have label segments.
-     *
-     * @return the list of label segment data lengths
-     */
-    List<Integer> getLabelSegmentDataLengths();
-
-    /**
-     * Return the label segment subheader lengths.
-     *
-     * This will always be an empty list for NITF 2.1 / NSIF 1.0 file, which do not have label segments.
-     *
-     * @return the list of label segment subheader lengths
-     */
-    List<Integer> getLabelSegmentSubHeaderLengths();
-
-    /**
      * Return the originating station identifier (OSTAID) for the file.
      *
      * "This field shall contain the identification code or name of the

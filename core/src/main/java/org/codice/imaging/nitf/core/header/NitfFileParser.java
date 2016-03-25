@@ -52,6 +52,8 @@ public final class NitfFileParser extends AbstractSegmentParser {
     private int extendedHeaderDataLength = 0;
 
     private NitfHeaderImpl nitfFileHeader = null;
+    private final List<Integer> llsh = new ArrayList<>();
+    private final List<Integer> ll = new ArrayList<>();
     private final List<Integer> ltsh = new ArrayList<>();
     private final List<Integer> lt = new ArrayList<>();
 
@@ -89,8 +91,8 @@ public final class NitfFileParser extends AbstractSegmentParser {
                 for (int i = 0; i < nitfHeader.getSymbolSegmentSubHeaderLengths().size(); ++i) {
                     parseStrategy.handleSymbolSegment(nitfReader, i);
                 }
-                for (int i = 0; i < nitfHeader.getLabelSegmentSubHeaderLengths().size(); ++i) {
-                    parseStrategy.handleLabelSegment(nitfReader, i);
+                for (int i = 0; i < parser.llsh.size(); ++i) {
+                    parseStrategy.handleLabelSegment(nitfReader, parser.ll.get(i));
                 }
             } else {
                 for (int i = 0; i < nitfHeader.getGraphicSegmentSubHeaderLengths().size(); ++i) {
@@ -377,11 +379,11 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLLSH() throws ParseException {
-        nitfFileHeader.getLabelSegmentSubHeaderLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LLSH_LENGTH));
+        llsh.add(reader.readBytesAsInteger(NitfHeaderConstants.LLSH_LENGTH));
     }
 
     private void readLL() throws ParseException {
-        nitfFileHeader.getLabelSegmentDataLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LL_LENGTH));
+        ll.add(reader.readBytesAsInteger(NitfHeaderConstants.LL_LENGTH));
     }
 
     private void readNUMT() throws ParseException {
