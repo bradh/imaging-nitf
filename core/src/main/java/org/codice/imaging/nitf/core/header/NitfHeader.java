@@ -43,13 +43,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     List<Integer> getDataExtensionSegmentDataLengths();
 
     /**
-     * Return the DES subheader lengths.
-     *
-     * @return the list of data extension segment subheader lengths
-     */
-    List<Integer> getDataExtensionSegmentSubHeaderLengths();
-
-    /**
      *
      * Return the extended header overflow (XHDOFL) for the file.
      *

@@ -58,6 +58,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     private final List<Integer> ll = new ArrayList<>();
     private final List<Integer> ltsh = new ArrayList<>();
     private final List<Integer> lt = new ArrayList<>();
+    private final List<Integer> ldsh = new ArrayList<>();
 
     private NitfFileParser(final NitfReader nitfReader, final NitfParseStrategy parseStrategy) throws ParseException {
         nitfFileHeader = new NitfHeaderImpl();
@@ -105,7 +106,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
             for (int i = 0; i < parser.ltsh.size(); ++i) {
                 parseStrategy.handleTextSegment(nitfReader, parser.lt.get(i));
             }
-            for (int i = 0; i < nitfHeader.getDataExtensionSegmentSubHeaderLengths().size(); ++i) {
+            for (int i = 0; i < parser.ldsh.size(); ++i) {
                 parseStrategy.handleDataExtensionSegment(nitfReader, i);
             }
         } catch (ParseException ex) {
@@ -407,9 +408,9 @@ public final class NitfFileParser extends AbstractSegmentParser {
 
     private void readLDSH(final int i) throws ParseException {
         if (i < nitfFileHeader.getDataExtensionSegmentDataLengths().size()) {
-            nitfFileHeader.getDataExtensionSegmentSubHeaderLengths().set(i, reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
+            ldsh.set(i, reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
         } else {
-            nitfFileHeader.getDataExtensionSegmentSubHeaderLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
+            ldsh.add(reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
         }
     }
 

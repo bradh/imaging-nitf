@@ -14,10 +14,15 @@
  */
 package org.codice.imaging.nitf.core.dataextension;
 
+import java.io.IOException;
+import java.text.ParseException;
 import javax.imageio.stream.ImageInputStream;
 import org.codice.imaging.nitf.core.common.CommonSegmentImpl;
 import org.codice.imaging.nitf.core.common.FileType;
 import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.CONTROLLED_EXTENSIONS;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESITEM_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESOFLW_LENGTH;
+import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.DESSHL_LENGTH;
 import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.REGISTERED_EXTENSIONS;
 import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.STREAMING_FILE_HEADER;
 import static org.codice.imaging.nitf.core.dataextension.DataExtensionConstants.TRE_OVERFLOW;
@@ -208,8 +213,18 @@ class DataExtensionSegmentImpl extends CommonSegmentImpl implements DataExtensio
      * {@inheritDoc}
      */
     @Override
-    public long getHeaderLength() {
-        return 0;
+    public long getHeaderLength() throws ParseException, IOException {
+        long headerLength = DataExtensionConstants.DE.length()
+                + DataExtensionConstants.DESID_LENGTH
+                + DataExtensionConstants.DESVER_LENGTH
+                + getSecurityMetadata().getSerialisedLength();
+        if (isTreOverflowNitf20() || isTreOverflowNitf21()) {
+            headerLength += DESOFLW_LENGTH;
+            headerLength += DESITEM_LENGTH;
+        }
+        headerLength += DESSHL_LENGTH;
+        headerLength += getUserDefinedSubheaderField().length();
+        return headerLength;
     }
 
 }

@@ -41,7 +41,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
 
     private final List<Long> li = new ArrayList<>();
     private final List<Integer> ls = new ArrayList<>();
-    private final List<Integer> ldsh = new ArrayList<>();
     private final List<Integer> ld = new ArrayList<>();
 
 
@@ -358,16 +357,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     @Override
     public final List<Integer> getSymbolSegmentDataLengths() {
         return ls;
-    }
-
-    /**
-     * Return the DES subheader lengths.
-     *
-     * @return the list of data extension segment subheader lengths
-     */
-    @Override
-    public final List<Integer> getDataExtensionSegmentSubHeaderLengths() {
-        return ldsh;
     }
 
     /**
