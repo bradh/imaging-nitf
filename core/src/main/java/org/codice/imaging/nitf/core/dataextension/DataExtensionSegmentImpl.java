@@ -37,6 +37,7 @@ class DataExtensionSegmentImpl extends CommonSegmentImpl implements DataExtensio
     private int desItemOverflowed = 0;
     private String userDefinedSubheaderField = null;
     private ImageInputStream desData = null;
+    private long dataLength = 0;
 
     /**
         Default constructor.
@@ -227,4 +228,13 @@ class DataExtensionSegmentImpl extends CommonSegmentImpl implements DataExtensio
         return headerLength;
     }
 
+    @Override
+    public final long getDataLength() {
+        return dataLength;
+    }
+
+    @Override
+    public void setDataLength(final long length) {
+        dataLength = length;
+    }
 }

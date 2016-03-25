@@ -14,7 +14,6 @@
  */
 package org.codice.imaging.nitf.core.header;
 
-import java.util.List;
 import org.codice.imaging.nitf.core.RGBColour;
 import org.codice.imaging.nitf.core.common.FileType;
 import org.codice.imaging.nitf.core.common.NitfDateTime;
@@ -34,13 +33,6 @@ public interface NitfHeader extends TaggedRecordExtensionHandler {
     @return complexity level
      */
     int getComplexityLevel();
-
-    /**
-     * Return the DES data lengths.
-     *
-     * @return the list of data extension segment data lengths
-     */
-    List<Integer> getDataExtensionSegmentDataLengths();
 
     /**
      *

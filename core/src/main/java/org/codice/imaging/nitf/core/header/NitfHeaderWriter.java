@@ -137,7 +137,7 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
             DataExtensionSegment desHeader = dataSource.getDataExtensionSegments().get(i);
             if (!desHeader.isStreamingMode()) {
                 fileLength += dataSource.getDataExtensionSegments().get(i).getHeaderLength();
-                fileLength += header.getDataExtensionSegmentDataLengths().get(i);
+                fileLength += dataSource.getDataExtensionSegments().get(i).getDataLength();
             }
         }
         writeFixedLengthNumber(fileLength, NitfHeaderConstants.FL_LENGTH);
@@ -176,7 +176,7 @@ public class NitfHeaderWriter extends AbstractSegmentWriter {
             DataExtensionSegment desHeader = dataSource.getDataExtensionSegments().get(i);
             if (!desHeader.isStreamingMode()) {
                 writeFixedLengthNumber(dataSource.getDataExtensionSegments().get(i).getHeaderLength(), NitfHeaderConstants.LDSH_LENGTH);
-                writeFixedLengthNumber(header.getDataExtensionSegmentDataLengths().get(i), NitfHeaderConstants.LD_LENGTH);
+                writeFixedLengthNumber(dataSource.getDataExtensionSegments().get(i).getDataLength(), NitfHeaderConstants.LD_LENGTH);
             }
         }
         writeFixedLengthNumber(0, NitfHeaderConstants.NUMRES_LENGTH);

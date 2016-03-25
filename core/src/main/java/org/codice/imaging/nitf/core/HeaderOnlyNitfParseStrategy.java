@@ -66,7 +66,7 @@ public class HeaderOnlyNitfParseStrategy extends SlottedNitfParseStrategy {
      * {@inheritDoc}
      */
     @Override
-    public final void handleDataExtensionSegment(final NitfReader reader, final int i) throws ParseException {
-        nitfStorage.getDataExtensionSegments().add(readDataExtensionSegment(reader, i, false));
+    public final void handleDataExtensionSegment(final NitfReader reader, final long dataLength) throws ParseException {
+        nitfStorage.getDataExtensionSegments().add(readDataExtensionSegment(reader, false, dataLength));
     }
 }

@@ -14,8 +14,6 @@
  */
 package org.codice.imaging.nitf.core.header;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.codice.imaging.nitf.core.RGBColour;
 import org.codice.imaging.nitf.core.common.FileType;
 import org.codice.imaging.nitf.core.common.NitfDateTime;
@@ -38,9 +36,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     private String nitfOriginatorsPhoneNumber = null;
     private int nitfUserDefinedHeaderOverflow = 0;
     private int nitfExtendedHeaderDataOverflow = 0;
-
-    private final List<Integer> ld = new ArrayList<>();
-
 
     /**
         Default constructor.
@@ -324,16 +319,6 @@ class NitfHeaderImpl extends TaggedRecordExtensionHandlerImpl implements NitfHea
     @Override
     public final int getUserDefinedHeaderOverflow() {
         return nitfUserDefinedHeaderOverflow;
-    }
-
-    /**
-     * Return the DES data lengths.
-     *
-     * @return the list of data extension segment data lengths
-     */
-    @Override
-    public final List<Integer> getDataExtensionSegmentDataLengths() {
-        return ld;
     }
 
     /**

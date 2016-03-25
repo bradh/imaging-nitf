@@ -258,16 +258,15 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
      * Parse the data extension segment.
      *
      * @param reader Reader to use for reading
-     * @param i the index of the segment to read (zero base)
      * @param parseData whether to parse the DES content (true) or skip over it (false).
+     * @param dataLength the length of the data part of this segment
      * @return the DES
      * @throws ParseException on parse error
      */
-    protected final DataExtensionSegment readDataExtensionSegment(final NitfReader reader, final int i,
-            final boolean parseData) throws ParseException {
+    protected final DataExtensionSegment readDataExtensionSegment(final NitfReader reader, final boolean parseData,
+            final long dataLength) throws ParseException {
         DataExtensionSegmentParser dataExtensionSegmentParser = new DataExtensionSegmentParser();
-        DataExtensionSegment dataExtensionSegment = dataExtensionSegmentParser.parse(reader);
-        long dataLength = nitfStorage.getNitfHeader().getDataExtensionSegmentDataLengths().get(i);
+        DataExtensionSegment dataExtensionSegment = dataExtensionSegmentParser.parse(reader, dataLength);
         if (parseData) {
             if (dataLength > 0) {
                 readDataExtensionSegmentData(dataExtensionSegment, reader, dataLength);

@@ -61,6 +61,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     private final List<Integer> ltsh = new ArrayList<>();
     private final List<Integer> lt = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
+    private final List<Long> ld = new ArrayList<>();
 
     private NitfFileParser(final NitfReader nitfReader, final NitfParseStrategy parseStrategy) throws ParseException {
         nitfFileHeader = new NitfHeaderImpl();
@@ -108,7 +109,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
                 parseStrategy.handleTextSegment(nitfReader, parser.lt.get(i));
             }
             for (int i = 0; i < parser.ldsh.size(); ++i) {
-                parseStrategy.handleDataExtensionSegment(nitfReader, i);
+                parseStrategy.handleDataExtensionSegment(nitfReader, parser.ld.get(i));
             }
         } catch (ParseException ex) {
             LOGGER.error(ex.getMessage() + ex);
@@ -408,7 +409,7 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLDSH(final int i) throws ParseException {
-        if (i < nitfFileHeader.getDataExtensionSegmentDataLengths().size()) {
+        if (i < ldsh.size()) {
             ldsh.set(i, reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
         } else {
             ldsh.add(reader.readBytesAsInteger(NitfHeaderConstants.LDSH_LENGTH));
@@ -416,10 +417,10 @@ public final class NitfFileParser extends AbstractSegmentParser {
     }
 
     private void readLD(final int i) throws ParseException {
-        if (i < nitfFileHeader.getDataExtensionSegmentDataLengths().size()) {
-            nitfFileHeader.getDataExtensionSegmentDataLengths().set(i, reader.readBytesAsInteger(NitfHeaderConstants.LD_LENGTH));
+        if (i < ld.size()) {
+            ld.set(i, reader.readBytesAsLong(NitfHeaderConstants.LD_LENGTH));
         } else {
-            nitfFileHeader.getDataExtensionSegmentDataLengths().add(reader.readBytesAsInteger(NitfHeaderConstants.LD_LENGTH));
+            ld.add(reader.readBytesAsLong(NitfHeaderConstants.LD_LENGTH));
         }
     }
 
