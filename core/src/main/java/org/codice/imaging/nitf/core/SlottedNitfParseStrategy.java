@@ -253,7 +253,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
         return textSegment;
     }
 
-//<editor-fold defaultstate="collapsed" desc="DES methods">
     /**
      * Parse the data extension segment.
      *
@@ -304,7 +303,6 @@ public abstract class SlottedNitfParseStrategy implements NitfParseStrategy {
             }
         }
     }
-//</editor-fold>
 
     /**
      * Register an additional TRE descriptor.

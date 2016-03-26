@@ -90,26 +90,26 @@ public final class NitfFileParser extends AbstractSegmentParser {
         NitfHeader nitfHeader = parser.nitfFileHeader;
 
         try {
-            for (int i = 0; i < parser.lish.size(); ++i) {
-                parseStrategy.handleImageSegment(nitfReader, parser.li.get(i));
+            for (Long dataLength : parser.li) {
+                parseStrategy.handleImageSegment(nitfReader, dataLength);
             }
             if (nitfHeader.getFileType() == FileType.NITF_TWO_ZERO) {
-                for (int i = 0; i < parser.lssh.size(); ++i) {
-                    parseStrategy.handleSymbolSegment(nitfReader, parser.ls.get(i));
+                for (Integer dataLength : parser.ls) {
+                    parseStrategy.handleSymbolSegment(nitfReader, dataLength);
                 }
-                for (int i = 0; i < parser.llsh.size(); ++i) {
-                    parseStrategy.handleLabelSegment(nitfReader, parser.ll.get(i));
+                for (Integer dataLength : parser.ll) {
+                    parseStrategy.handleLabelSegment(nitfReader, dataLength);
                 }
             } else {
-                for (int i = 0; i < parser.lssh.size(); ++i) {
-                    parseStrategy.handleGraphicSegment(nitfReader, parser.ls.get(i));
+                for (Integer dataLength : parser.ls) {
+                    parseStrategy.handleGraphicSegment(nitfReader, dataLength);
                 }
             }
-            for (int i = 0; i < parser.ltsh.size(); ++i) {
-                parseStrategy.handleTextSegment(nitfReader, parser.lt.get(i));
+            for (Integer dataLength : parser.lt) {
+                parseStrategy.handleTextSegment(nitfReader, dataLength);
             }
-            for (int i = 0; i < parser.ldsh.size(); ++i) {
-                parseStrategy.handleDataExtensionSegment(nitfReader, parser.ld.get(i));
+            for (Long dataLength : parser.ld) {
+                parseStrategy.handleDataExtensionSegment(nitfReader, dataLength);
             }
         } catch (ParseException ex) {
             LOGGER.error(ex.getMessage() + ex);
