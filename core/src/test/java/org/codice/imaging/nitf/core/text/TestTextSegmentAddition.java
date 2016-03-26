@@ -41,7 +41,7 @@ public class TestTextSegmentAddition {
 
     @Test
     public void writeSimpleHeader() throws ParseException {
-        final String OUTFILE_NAME = "testsegment1.ntf";
+        final String OUTFILE_NAME = "textsegment_simple.ntf";
         if (new File(OUTFILE_NAME).exists()) {
             new File(OUTFILE_NAME).delete();
         }
@@ -71,7 +71,7 @@ public class TestTextSegmentAddition {
 
     @Test
     public void writeHeaderWithId() throws ParseException {
-        final String OUTFILE_NAME = "testsegment2.ntf";
+        final String OUTFILE_NAME = "textsegment_withId.ntf";
         if (new File(OUTFILE_NAME).exists()) {
             new File(OUTFILE_NAME).delete();
         }
@@ -97,6 +97,54 @@ public class TestTextSegmentAddition {
         assertTrue(TextFormat.BASICCHARACTERSET.equals(testSegment.getTextFormat()));
         assertEquals("This is the body.\r\nIt has two lines.", testSegment.getData());
         assertEquals(textSegment.getTextDateTime().getSourceString(), testSegment.getTextDateTime().getSourceString());
+
+        new File(OUTFILE_NAME).delete();
+    }
+
+    @Test
+    public void writeTwoTextHeaders() throws ParseException {
+        final String OUTFILE_NAME = "twotextsegments.ntf";
+        if (new File(OUTFILE_NAME).exists()) {
+            new File(OUTFILE_NAME).delete();
+        }
+
+        SlottedMemoryNitfStorage store = createBasicStore();
+        TextSegment textSegment1 = TextSegmentFactory.getDefault(FileType.NITF_TWO_ONE,
+                "Some Title",
+                "This is the body.\r\nIt has two lines.");
+        textSegment1.setIdentifier("TXT001");
+        store.getTextSegments().add(textSegment1);
+
+        TextSegment textSegment2 = TextSegmentFactory.getDefault(FileType.NITF_TWO_ONE);
+        textSegment2.setIdentifier("TXT002");
+        textSegment2.setTextTitle("A strange message");
+        textSegment2.setTextFormat(TextFormat.USMTF);
+        textSegment2.setData("//GENTEXT/REMARKS/(U) THIS IS AN EXAMPLE USMTF  \nMESSAGE TEXT.//");
+        store.getTextSegments().add(textSegment2);
+
+        NitfFileWriter writer = new NitfFileWriter(store, OUTFILE_NAME);
+        writer.write();
+        NitfDataSource dataSource = verifyBasicHeader(OUTFILE_NAME);
+        assertEquals(0, dataSource.getImageSegments().size());
+        assertEquals(0, dataSource.getGraphicSegments().size());
+        assertEquals(2, dataSource.getTextSegments().size());
+        assertEquals(0, dataSource.getDataExtensionSegments().size());
+
+        TextSegment testSegment1 = dataSource.getTextSegments().get(0);
+        assertNotNull(testSegment1);
+        assertEquals("TXT001", testSegment1.getIdentifier().trim());
+        assertEquals("Some Title", testSegment1.getTextTitle());
+        assertTrue(TextFormat.BASICCHARACTERSET.equals(testSegment1.getTextFormat()));
+        assertEquals("This is the body.\r\nIt has two lines.", testSegment1.getData());
+        assertEquals(textSegment1.getTextDateTime().getSourceString(), testSegment1.getTextDateTime().getSourceString());
+
+        TextSegment testSegment2 = dataSource.getTextSegments().get(1);
+        assertNotNull(testSegment2);
+        assertEquals("TXT002", testSegment2.getIdentifier().trim());
+        assertEquals("A strange message", testSegment2.getTextTitle());
+        assertEquals(TextFormat.USMTF, testSegment2.getTextFormat());
+        assertEquals(textSegment2.getData(), testSegment2.getData());
+        assertEquals(textSegment2.getTextDateTime().getSourceString(), testSegment2.getTextDateTime().getSourceString());
 
         new File(OUTFILE_NAME).delete();
     }

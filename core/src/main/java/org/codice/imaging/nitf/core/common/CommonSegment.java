@@ -33,7 +33,10 @@ public interface CommonSegment extends TaggedRecordExtensionHandler {
      * This field shall contain a valid alphanumeric identification code associated with the segment. The valid codes
      * are determined by the application.
      *
-     * @return the identifier
+     * This is a fixed length field in the segment, and any space padding will be included in the result. You may wish
+     * to trim() the result before displaying or storing this field content.
+     *
+     * @return the identifier, including any space padding.
      */
     String getIdentifier();
 
