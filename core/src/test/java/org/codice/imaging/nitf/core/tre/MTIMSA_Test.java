@@ -14,11 +14,6 @@
  */
 package org.codice.imaging.nitf.core.tre;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import org.codice.imaging.nitf.core.common.NitfInputStreamReader;
-import org.codice.imaging.nitf.core.common.NitfReader;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -27,22 +22,15 @@ import org.junit.Test;
  *
  * This is defined in NGA.STND.0044 1.1, as part of MIE4NITF. See Section 5.9.4.7 and Table 17.
  */
-public class MTIMSA_Test {
+public class MTIMSA_Test extends SharedTreTest {
 
     public MTIMSA_Test() {
     }
 
     @Test
     public void SimpleParse() throws Exception {
-        InputStream inputStream = new ByteArrayInputStream("MTIMSA0015000199fa238862-73ed-41fc-8d52-bfc7a954428c00295cb5511-7350-479b-9c8a-f028aba01e840000030045.0000000E+0100000000620160716215756.012345678\u0000\u0000\u0000\u0000\u0001\u0031\u002D\u0000\u0001\u0001\u0002\u0003\u0004\u0000\u0000\u0000\u0001\u004e".getBytes());
-        BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
-        NitfReader nitfReader = new NitfInputStreamReader(bufferedStream);
-        TreCollectionParser parser = new TreCollectionParser();
-        TreCollection parseResult = parser.parse(nitfReader, 150, TreSource.ImageExtendedSubheaderData);
-        assertEquals(1, parseResult.getTREs().size());
-        Tre mtimsa = parseResult.getTREsWithName("MTIMSA").get(0);
-        assertNotNull(mtimsa);
-        assertNull(mtimsa.getRawData());
+        String testData = "MTIMSA0015000199fa238862-73ed-41fc-8d52-bfc7a954428c00295cb5511-7350-479b-9c8a-f028aba01e840000030045.0000000E+0100000000620160716215756.012345678\u0000\u0000\u0000\u0000\u0001\u0031\u002D\u0000\u0001\u0001\u0002\u0003\u0004\u0000\u0000\u0000\u0001\u004e";
+        Tre mtimsa = parseTRE(testData, 150, "MTIMSA");
         assertEquals(15, mtimsa.getEntries().size());
         assertEquals("001", mtimsa.getFieldValue("IMAGE_SEG_INDEX"));
         assertEquals("99", mtimsa.getFieldValue("GEOCOORDS_STATIC"));

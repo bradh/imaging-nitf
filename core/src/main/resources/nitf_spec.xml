@@ -309,9 +309,8 @@
     </tre>
 
     <!-- RFC_082A, draft release -->
-    <!--
     <tre name="CSWRPB" minlength="109" maxlength="99985" location="image">
-        <field name="NUM_SETS_WARP_DATA" length="1" type="integer" minvalue="1" maxvalue="9"/>
+        <field name="NUM_SETS_WARP_DATA" length="1" type="integer" minval="1" maxval="9"/>
         <field name="SENSOR_TYPE" length="1" type="string"/>
         <if cond="SENSOR_TYPE=F">
             <field name="WRP_INTERP" length="1" type="string"/>
@@ -320,33 +319,32 @@
             <if cond="SENSOR_TYPE=F">
                 <field name="FL_WARP" length="11" type="real"/>
             </if>
-            <field name="OFFSET_LINE" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="OFFSET_SAMP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="SCALE_LINE" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="SCALE_SAMP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="OFFSET_LINE_UNWRP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="OFFSET_SAMP_UNWRP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="SCALE_LINE_UNWRP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="SCALE_SAMP_UNWRP" length="7" type="integer" minvalue="1" maxvalue="9999999"/>
-            <field name="LINE_POLY_ORDER_M1" length="1" type="integer" minvalue="0" maxvalue="9"/>
-            <field name="LINE_POLY_ORDER_M2" length="1" type="integer" minvalue="0" maxvalue="9"/>
-            <field name="SAMP_POLY_ORDER_N1" length="1" type="integer" minvalue="0" maxvalue="9"/>
-            <field name="SAMP_POLY_ORDER_N2" length="1" type="integer" minvalue="0" maxvalue="9"/>
-            <loop counter="LINE_POLY_ORDER_M2">
-                <loop counter="LINE_POLY_ORDER_M1">
+            <field name="OFFSET_LINE" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="OFFSET_SAMP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="SCALE_LINE" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="SCALE_SAMP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="OFFSET_LINE_UNWRP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="OFFSET_SAMP_UNWRP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="SCALE_LINE_UNWRP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="SCALE_SAMP_UNWRP" length="7" type="integer" minval="1" maxval="9999999"/>
+            <field name="LINE_POLY_ORDER_M1" length="1" type="integer" minval="0" maxval="9"/>
+            <field name="LINE_POLY_ORDER_M2" length="1" type="integer" minval="0" maxval="9"/>
+            <field name="SAMP_POLY_ORDER_N1" length="1" type="integer" minval="0" maxval="9"/>
+            <field name="SAMP_POLY_ORDER_N2" length="1" type="integer" minval="0" maxval="9"/>
+            <loop counter="LINE_POLY_ORDER_M2" name="LINE_POLYNOMIALS_SAMPLE">
+                <loop counter="LINE_POLY_ORDER_M1" name="LINE_POLYNOMIALS_LINE">
                     <field name="A" length="21" type="real"/>
                 </loop>
             </loop>
-            <loop counter="SAMP_POLY_ORDER_N2">
-                <loop counter="LINE_POLY_ORDER_N1">
+            <loop counter="SAMP_POLY_ORDER_N2" name="SAMPLE_POLYNOMIALS_SAMPLE">
+                <loop counter="LINE_POLY_ORDER_N1" name="SAMPLE_POLYNOMIALS_LINE">
                     <field name="B" length="21" type="real"/>
                 </loop>
             </loop>
         </loop>
         <field name="RESERVED_LEN" length="5" type="integer"/>
-        <field name="RESERVED" varlength="RESERVED_LEN" type="string"/>
+        <field name="RESERVED" length_var="RESERVED_LEN" type="string"/>
     </tre>
-    -->
 
     <!-- STDI-0002 Appendix N -->
     <tre name="ENGRDA">
