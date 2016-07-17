@@ -14,10 +14,10 @@
  **/
 package org.codice.imaging.nitf.core.tre;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.codice.imaging.nitf.core.common.NitfFormatException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,10 +96,31 @@ class TreGroupImpl implements TreGroup {
     @Override
     public final int getIntValue(final String tagName) throws NitfFormatException {
         try {
-            String fv = getFieldValue(tagName);
-            return Integer.parseInt(fv, DECIMAL_BASE);
+            TreEntry entry = getEntry(tagName);
+            if (entry.getDataType().equals("UINT")) {
+                int res = 0;
+                for (int i = 0; i < entry.getFieldValue().length(); ++i) {
+                    res = (res << Byte.SIZE) + Byte.toUnsignedInt(entry.getFieldValue().getBytes(StandardCharsets.US_ASCII)[i]);
+                }
+                return res;
+            } else {
+                return Integer.parseInt(entry.getFieldValue(), DECIMAL_BASE);
+            }
         } catch (NitfFormatException ex) {
             throw new NitfFormatException(String.format("Failed to look up %s as integer value", tagName));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final double getDoubleValue(final String tagName) throws NitfFormatException {
+        try {
+            TreEntry entry = getEntry(tagName);
+            return Double.parseDouble(entry.getFieldValue());
+        } catch (NitfFormatException ex) {
+            throw new NitfFormatException(String.format("Failed to look up %s as double value", tagName));
         }
     }
 

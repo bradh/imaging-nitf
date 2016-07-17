@@ -76,6 +76,16 @@ public interface TreGroup {
      */
     int getIntValue(String tagName) throws NitfFormatException;
 
+
+    /**
+     * Get the field value for a specific tag in double format.
+     *
+     * @param tagName the name (tag) of the field to look up.
+     * @return the field value corresponding to the tag name, as an double.
+     * @throws NitfFormatException when the tag is not found or the value cannot be converted to double format.
+     */
+    double getDoubleValue(String tagName) throws NitfFormatException;
+
     /**
      Debug dump of the entries.
      */
