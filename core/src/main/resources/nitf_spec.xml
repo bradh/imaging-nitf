@@ -248,6 +248,7 @@
         <field name="LINEAR_ERR" length="3"/>
     </tre>
 
+    <!-- RFC_082A, draft release -->
     <tre name="CSEXRB" minlength="246" maxlength="99985" location="image">
         <field name="IMAGE_UUID" type="string" length="36"/>
         <field name="NUM_ASSOC_DES" type="integer" length="3"/>
@@ -271,9 +272,45 @@
             <if cond="TIME_STAMP_LOC=0">
                 <field name="REFERENCE_FRAME_NUM" type="integer" minval="1" maxval="999999999" length="9"/>
                 <field name="BASE_TIMESTAMP" type="string" length="24"/>
-                <!-- TODO: DT_values -->
+                <field name="DT_MULTIPLIER" length="8" type="UINT"/>
+                <field name="DT_SIZE" length="1" type="UINT" minval="1" maxval="8"/>
+                <field name="NUMBER_FRAMES" length="4" type="UINT"/>
+                <field name="NUMBER_DT" length="4" type="UINT"/>
+                <loop counter="NUMBER_DT" md_prefix="DT%d" name="DELTA_TIME">
+                    <field name="DT" length_var="DT_SIZE" type="UINT"/>
+                </loop>
             </if>
         </if>
+        <field name="MAX_GSD" type="string" length="5"/>
+        <field name="ALONG_SCAN_GSD" type="string" length="5"/>
+        <field name="CROSS_SCAN_GSD" type="string" length="5"/>
+        <field name="GEO_MEAN_GSD" type="string" length="5"/>
+        <field name="A_S_VERT_GSD" type="string" length="5"/>
+        <field name="C_S_VERT_GSD" type="string" length="5"/>
+        <field name="GEO_MEAN_VERT_GSD" type="string" length="5"/>
+        <field name="GSD_BETA_ANGLE" type="string" length="5"/>
+        <field name="DYNAMIC_RANGE" type="string" length="5"/>
+        <field name="NUM_LINES" type="integer" minval="0" maxval="9999999" length="7"/>
+        <field name="NUM_SAMPLES" type="integer" minval="0" maxval="99999" length="5"/>
+        <field name="ANGLE_TO_NORTH" type="string" length="7"/>
+        <field name="OBLIQUITY_ANGLE" type="string" length="6"/>
+        <field name="AZ_OF_OBLIQUITY" type="string" length="7"/>
+        <field name="ATM_REFR_FLAG" type="string" length="1"/>
+        <field name="VEL_ABER_FLAG" type="string" length="1"/>
+        <field name="GRD_COVER" type="string" length="1"/>
+        <field name="SNOW_DEPTH_CATEGORY" type="string" length="1"/>
+        <field name="SUN_AZIMUTH" type="string" length="7"/>
+        <field name="SUN_ELEVATION" type="string" length="7"/>
+        <field name="PREDICTED_NIIRS" type="string" length="3"/>
+        <field name="CIRCL_ERR" type="string" length="5"/>
+        <field name="LINEAR_ERR" type="string" length="5"/>
+        <field name="CLOUD_COVER" type="string" length="3"/>
+        <if cond="SENSOR_TYPE=F">
+            <field name="ROLLING_SHUTTER_FLAG" type="string" length="1"/>
+        </if>
+        <field name="UE_TIME_FLAG" type="string" length="1"/>
+        <field name="RESERVED_LEN" length="5" type="integer"/>
+        <field name="RESERVED" length_var="RESERVED_LEN" type="string"/>
     </tre>
 
     <tre name="CSPROA" length="120" location="image">
