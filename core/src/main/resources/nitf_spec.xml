@@ -337,7 +337,7 @@
                 </loop>
             </loop>
             <loop counter="SAMP_POLY_ORDER_N2" name="SAMPLE_POLYNOMIALS_SAMPLE">
-                <loop counter="LINE_POLY_ORDER_N1" name="SAMPLE_POLYNOMIALS_LINE">
+                <loop counter="SAMP_POLY_ORDER_N1" name="SAMPLE_POLYNOMIALS_LINE">
                     <field name="B" length="21" type="real"/>
                 </loop>
             </loop>
