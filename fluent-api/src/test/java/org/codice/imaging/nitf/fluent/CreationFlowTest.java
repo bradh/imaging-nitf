@@ -14,6 +14,7 @@
  */
 package org.codice.imaging.nitf.fluent;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +37,8 @@ import org.codice.imaging.nitf.core.security.SecurityClassification;
 import org.codice.imaging.nitf.core.text.TextFormat;
 import org.codice.imaging.nitf.core.text.TextSegment;
 import org.codice.imaging.nitf.core.text.TextSegmentFactory;
+import org.codice.imaging.nitf.imagesource.ImageSegmentSourceFactory;
+import org.codice.imaging.nitf.imagesource.ImageSegmentSupplier;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -134,6 +137,7 @@ public class CreationFlowTest {
                 )
                 .forEachTextSegment(
                         textSegment -> {
+                            assertThat(textSegment.getFileType(), is(FileType.NITF_TWO_ONE));
                             assertThat(textSegment.getSecurityMetadata().getSecurityClassification(), is(SecurityClassification.UNCLASSIFIED));
                             assertThat(textSegment.getTextTitle(), is("Better title"));
                             assertThat(textSegment.getTextFormat(), is(TextFormat.BASICCHARACTERSET));
@@ -402,5 +406,52 @@ public class CreationFlowTest {
         exception.expect(IllegalStateException.class);
         exception.expectMessage("NitfCreationFlow.addSegment(): segment FileType must match header FileType.");
         flow.dataExtensionSegment(() -> DataExtensionSegmentFactory.getDefault(FileType.NITF_TWO_ONE));
+    }
+
+    @Test
+    public void createFromImageSource1pixel() throws FileNotFoundException, NitfFormatException, IOException {
+        final String filename = "imageFromJPEG1pixel.ntf";
+        BufferedImage sourceImage = ImageIO.read(getClass().getResourceAsStream("/JPEG/1pixel.jpg"));
+
+        NitfCreationFlow flow = new NitfCreationFlow();
+        flow.fileHeader(() -> NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE))
+                .imageSegment(new ImageSegmentSupplier(sourceImage, FileType.NITF_TWO_ONE))
+                .write(filename);
+
+        assertThat(flow.build().getImageSegments().size(), is(1));
+        new NitfParserInputFlow()
+                .file(new File(filename))
+                .allData()
+                .fileHeader(header -> {
+                    assertThat(header.getFileType(), is(FileType.NITF_TWO_ONE));
+                })
+                .forEachImageSegment(image -> {
+                    assertThat(image.getFileType(), is(FileType.NITF_TWO_ONE));
+                });
+
+        new File(filename).deleteOnExit();
+    }
+
+    @Test
+    public void createFromImageSource() throws FileNotFoundException, NitfFormatException, IOException {
+        final String filename = "imageFromJPEG.ntf";
+        ImageSegment imageSegment = ImageSegmentSourceFactory.getImageSegmentFrom3ByteBGR(getClass().getResourceAsStream("/JPEG/grevillea.jpg"), FileType.NITF_TWO_ONE);
+        NitfCreationFlow flow = new NitfCreationFlow();
+        flow.fileHeader(() -> NitfHeaderFactory.getDefault(FileType.NITF_TWO_ONE))
+                .imageSegment(() -> { return imageSegment; })
+                .write(filename);
+
+        assertThat(flow.build().getImageSegments().size(), is(1));
+        new NitfParserInputFlow()
+                .file(new File(filename))
+                .allData()
+                .fileHeader(header -> {
+                    assertThat(header.getFileType(), is(FileType.NITF_TWO_ONE));
+                })
+                .forEachImageSegment(image -> {
+                    assertThat(image.getFileType(), is(FileType.NITF_TWO_ONE));
+                });
+
+        new File(filename).deleteOnExit();
     }
 }

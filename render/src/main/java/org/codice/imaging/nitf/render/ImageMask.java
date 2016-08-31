@@ -71,7 +71,7 @@ public final class ImageMask {
         if (mImageSegment.getImageMode() == ImageMode.BANDSEQUENTIAL) {
             numBandsToRead = mImageSegment.getNumBands();
         }
-        int bytesPerPixel = (int) mImageSegment.getNumberOfBytesPerBlock();
+        int bytesPerPixel = getNumberOfBytesPerBlock();
         int blockCounter = 0;
         for (int m = 0; m < numBandsToRead; ++m) {
             for (int n = 0; n < mImageSegment.getNumberOfBlocksPerRow() * mImageSegment.getNumberOfBlocksPerColumn(); ++n) {
@@ -79,6 +79,20 @@ public final class ImageMask {
                 blockCounter++;
             }
         }
+    }
+
+    /*
+     * Calculate the number of bytes per block, assuming uncompressed data.
+     *
+     * Use of this method on compressed images is probably a bad idea.
+     *
+     * @return number of bytes for image data in one block
+     */
+    private int getNumberOfBytesPerBlock() {
+        long numberOfPixelsPerBlockPerBand = mImageSegment.getNumberOfPixelsPerBlockHorizontal() * mImageSegment.getNumberOfPixelsPerBlockVertical();
+        long numberOfPixelsPerBlock = numberOfPixelsPerBlockPerBand * mImageSegment.getNumBands();
+        long numberOfBytesPerBlock = numberOfPixelsPerBlock * mImageSegment.getNumberOfBitsPerPixelPerBand() / Byte.SIZE;
+        return (int) numberOfBytesPerBlock;
     }
 
     private void readImageMask(final ImageInputStream imageInputStream) throws IOException {

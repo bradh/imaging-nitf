@@ -54,6 +54,8 @@
                     <include>**/*.on1</include>
                     <include>SENSRB/*.txt</include>
                     <include>**/*.ref.png</include>
+                    <include>PNG/*.png</include>
+                    <include>JPEG/*.jpg</include>
                 </includes>
             </configuration>
         </plugin>

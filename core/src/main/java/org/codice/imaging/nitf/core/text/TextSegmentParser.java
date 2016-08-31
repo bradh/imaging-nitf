@@ -17,8 +17,8 @@ package org.codice.imaging.nitf.core.text;
 import org.codice.imaging.nitf.core.common.AbstractSegmentParser;
 import org.codice.imaging.nitf.core.common.FileType;
 import org.codice.imaging.nitf.core.common.NitfFormatException;
-import org.codice.imaging.nitf.core.common.ParseStrategy;
 import org.codice.imaging.nitf.core.common.NitfReader;
+import org.codice.imaging.nitf.core.common.ParseStrategy;
 import org.codice.imaging.nitf.core.security.SecurityMetadataParser;
 import static org.codice.imaging.nitf.core.text.TextConstants.TE;
 import static org.codice.imaging.nitf.core.text.TextConstants.TEXTID20_LENGTH;
@@ -59,7 +59,7 @@ public class TextSegmentParser extends AbstractSegmentParser {
         reader = nitfReader;
         segment = new TextSegmentImpl();
         parsingStrategy = parseStrategy;
-        segment.setFileType(nitfReader.getFileType());
+        segment.setFileType(reader.getFileType());
 
         readTE();
         readTEXTID();

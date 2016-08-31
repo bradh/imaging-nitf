@@ -586,17 +586,6 @@ class ImageSegmentImpl extends CommonBasicSegmentImpl implements ImageSegment {
      * {@inheritDoc}
      */
     @Override
-    public final long getNumberOfBytesPerBlock() {
-        long numberOfPixelsPerBlockPerBand = getNumberOfPixelsPerBlockHorizontal() * getNumberOfPixelsPerBlockVertical();
-        long numberOfPixelsPerBlock = numberOfPixelsPerBlockPerBand * getNumBands();
-        long numberOfBytesPerBlock = numberOfPixelsPerBlock * getNumberOfBitsPerPixelPerBand() / BITS_PER_BYTE;
-        return numberOfBytesPerBlock;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ImageInputStream getData() {
         return imageData;
     }

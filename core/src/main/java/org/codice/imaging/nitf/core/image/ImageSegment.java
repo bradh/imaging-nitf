@@ -937,15 +937,6 @@ public interface ImageSegment extends CommonBasicSegment {
     void setUserDefinedHeaderOverflow(final int overflow);
 
     /**
-     * Calculate the number of bytes per block, assuming uncompressed data.
-     *
-     * Use of this method on compressed images is probably a bad idea.
-     *
-     * @return number of bytes for image data in one block
-     */
-    long getNumberOfBytesPerBlock();
-
-    /**
      * Get the data for this image segment.
      *
      * You may need to rewind this stream if it has been previously read.

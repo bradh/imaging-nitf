@@ -16,8 +16,8 @@ package org.codice.imaging.nitf.core.symbol;
 
 import org.codice.imaging.nitf.core.common.AbstractSegmentParser;
 import org.codice.imaging.nitf.core.common.NitfFormatException;
-import org.codice.imaging.nitf.core.common.ParseStrategy;
 import org.codice.imaging.nitf.core.common.NitfReader;
+import org.codice.imaging.nitf.core.common.ParseStrategy;
 import static org.codice.imaging.nitf.core.graphic.GraphicSegmentConstants.SALVL_LENGTH;
 import static org.codice.imaging.nitf.core.graphic.GraphicSegmentConstants.SCOLOR_LENGTH;
 import static org.codice.imaging.nitf.core.graphic.GraphicSegmentConstants.SDLVL_LENGTH;
@@ -66,7 +66,7 @@ public class SymbolSegmentParser extends AbstractSegmentParser {
         segment = new SymbolSegmentImpl();
         segment.setDataLength(dataLength);
         parsingStrategy = parseStrategy;
-        segment.setFileType(nitfReader.getFileType());
+        segment.setFileType(reader.getFileType());
 
         readSY();
         readSID();

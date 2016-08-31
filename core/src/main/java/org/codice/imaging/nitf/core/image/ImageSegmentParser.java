@@ -93,7 +93,7 @@ public class ImageSegmentParser extends AbstractSegmentParser {
         segment = new ImageSegmentImpl();
         segment.setDataLength(dataLength);
         parsingStrategy = parseStrategy;
-        segment.setFileType(nitfReader.getFileType());
+        segment.setFileType(reader.getFileType());
 
         readIM();
         readIID1();

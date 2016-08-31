@@ -35,6 +35,7 @@
         <module>registryparser</module>
         <module>deswrap</module>
         <module>imagecompare</module>
+        <module>imagesource</module>
     </modules>
 
     <distributionManagement>
