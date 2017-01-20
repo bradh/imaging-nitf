@@ -35,6 +35,9 @@ public class SimpleLookup {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleLookup.class.getName());
 
+    protected SimpleLookup() {
+    }
+
     /**
      * Construct new lookup.
      *
@@ -44,7 +47,7 @@ public class SimpleLookup {
         parseSimpleLookup(xmlStream);
     }
 
-    private void parseSimpleLookup(final InputStream xmlStream) {
+    protected void parseSimpleLookup(final InputStream xmlStream) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(xmlStream);
             reader.next();

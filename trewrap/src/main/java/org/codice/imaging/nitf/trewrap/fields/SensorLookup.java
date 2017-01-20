@@ -44,7 +44,10 @@ public class SensorLookup {
         parseSensorLookup(xmlStream);
     }
 
-    private void parseSensorLookup(final InputStream xmlStream) {
+    protected SensorLookup() {
+    }
+
+    protected void parseSensorLookup(final InputStream xmlStream) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(xmlStream);
             reader.next();
