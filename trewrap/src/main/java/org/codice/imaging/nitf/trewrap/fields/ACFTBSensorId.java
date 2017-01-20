@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class ACFTBSensorId extends SimpleLookup {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ACFTBSensorId.class);
+
     private static final ACFTBSensorId INSTANCE = new ACFTBSensorId();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ACFTBSensorId.class);
     /**
      * Private constructor for this lookup class.
      */

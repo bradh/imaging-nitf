@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class ACFTBMissionPlanMode extends SensorLookup {
 
-    private static final ACFTBMissionPlanMode INSTANCE = new ACFTBMissionPlanMode();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ACFTBMissionPlanMode.class);
+
+    private static final ACFTBMissionPlanMode INSTANCE = new ACFTBMissionPlanMode();
 
     /**
      * Constructor for this lookup class.

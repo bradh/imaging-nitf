@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class ACFTBSceneSource extends SensorLookup {
 
-    private static final ACFTBSceneSource INSTANCE = new ACFTBSceneSource();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ACFTBSceneSource.class);
+
+    private static final ACFTBSceneSource INSTANCE = new ACFTBSceneSource();
 
     /**
      * Constructor for this lookup class.

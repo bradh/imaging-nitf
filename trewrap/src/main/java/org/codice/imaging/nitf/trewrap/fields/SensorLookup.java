@@ -44,10 +44,22 @@ public class SensorLookup {
         parseSensorLookup(xmlStream);
     }
 
+    /**
+     * Internal constructor.
+     */
     protected SensorLookup() {
     }
 
-    protected void parseSensorLookup(final InputStream xmlStream) {
+    /**
+     * Build lookup map from XML representation.
+     *
+     * The lookup can be manually configured, but typically most of the data will be read from an existing source. This
+     * method provides reading from XML in a specific format that is generated from the main registry (see NITF
+     * Registry Values Parser module). The XML is stored as resources in the TRE Wrapper module.
+     *
+     * @param xmlStream the XML to read.
+     */
+    protected final void parseSensorLookup(final InputStream xmlStream) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(xmlStream);
             reader.next();
