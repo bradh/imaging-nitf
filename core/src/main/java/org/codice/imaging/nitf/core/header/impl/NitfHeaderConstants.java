@@ -217,6 +217,20 @@ public final class NitfHeaderConstants {
     protected static final int NUMRES_LENGTH = 3;
 
     /**
+     * Length of each of the "Length of Nth Reserved Extension Segment Subheader" fields in the NITF file header.
+     * <p>
+     * See MIL-STD-2500C Table A-1.
+     */
+    protected static final int LRESH_LENGTH = 4;
+
+    /**
+     * Length of each of the "Length of Nth Reserved Extension Segment" fields in the NITF file header.
+     * <p>
+     * See MIL-STD-2500C Table A-1.
+     */
+    protected static final int LRE_LENGTH = 9;
+
+    /**
      * Length of the "User Defined Header Data Length" field in the NITF 2.1 file header.
      * <p>
      * See MIL-STD-2500C Table A-1.

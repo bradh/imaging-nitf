@@ -62,6 +62,8 @@ public final class NitfParser extends AbstractSegmentParser {
     private final List<Integer> lt = new ArrayList<>();
     private final List<Integer> ldsh = new ArrayList<>();
     private final List<Long> ld = new ArrayList<>();
+    private final List<Integer> lresh = new ArrayList<>();
+    private final List<Integer> lre = new ArrayList<>();
 
     private NitfParser(final NitfReader nitfReader, final ParseStrategy parseStrategy) throws NitfFormatException {
         nitfFileHeader = new NitfHeaderImpl();
@@ -110,6 +112,10 @@ public final class NitfParser extends AbstractSegmentParser {
             }
             for (Long dataLength : parser.ld) {
                 parseStrategy.handleDataExtensionSegment(nitfReader, dataLength);
+            }
+            for (int j = 0; j < parser.lresh.size(); ++j) {
+                nitfReader.skip(parser.lresh.get(j));
+                nitfReader.skip(parser.lre.get(j));
             }
         } catch (NitfFormatException ex) {
             LOGGER.error(ex.getMessage() + ex);
@@ -184,8 +190,9 @@ public final class NitfParser extends AbstractSegmentParser {
     private void readBaseHeaderReservedExtensionParts() throws NitfFormatException {
         readNUMRES();
         for (int i = 0; i < numberReservedExtensionSegments; ++i) {
-            // TODO: find a case that exercises this and implement it
-            throw new UnsupportedOperationException("IMPLEMENT RES PARSING");
+            readLRESH();
+            readLRE();
+
         }
     }
 
@@ -426,6 +433,14 @@ public final class NitfParser extends AbstractSegmentParser {
 
     private void readNUMRES() throws NitfFormatException {
         numberReservedExtensionSegments = reader.readBytesAsInteger(NitfHeaderConstants.NUMRES_LENGTH);
+    }
+
+    private void readLRESH() throws NitfFormatException {
+        lresh.add(reader.readBytesAsInteger(NitfHeaderConstants.LRESH_LENGTH));
+    }
+
+    private void readLRE() throws NitfFormatException {
+        lre.add(reader.readBytesAsInteger(NitfHeaderConstants.LRE_LENGTH));
     }
 
     private void readUDHDL() throws NitfFormatException {
